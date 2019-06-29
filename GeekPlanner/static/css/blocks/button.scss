@@ -1,0 +1,17 @@
+.btn-register {
+  color: #fffdef;
+  border-color: #fffdef;
+  &:hover {
+    background-color: #fffdef;
+    color: #26315d;
+    border-color: #fffdef;
+  }
+}
+
+.btn-trial {
+  background-color: #e9d16f;
+  border: none;
+  &:hover {
+    background-color: #f5dd70;
+  }
+}

@@ -1,0 +1,34 @@
+{% load staticfiles %}
+
+<nav class="navbar navbar-expand-lg menu shadow p-3">
+  <a class="navbar-brand" href="{% url 'main:index' %}">
+    GEEKPLANNER
+  </a>
+  <ul class="nav navbar-nav mx-auto">
+    <li>
+      <a href="{% url 'main:index' %}"
+         class="nav-link rounded font-weight-bold menu__item
+          {% if request.resolver_match.url_name == 'index' %}menu__item--active{% else %}menu__item{% endif %}">
+        Главная
+      </a>
+    </li>
+    <li>
+      <a class="nav-link rounded font-weight-bold menu__item" href="#">
+        Расценки
+      </a>
+    </li>
+    <li>
+      <a class="nav-link rounded font-weight-bold menu__item" href="#">
+        Опции
+      </a>
+    </li>
+  </ul>
+  <div class="btn-group" role="group">
+    <button type="button" class="btn btn-outline-primary font-weight-bold btn-register">
+      Вход
+    </button>
+    <button type="button" class="btn btn-outline-primary font-weight-bold btn-register">
+      Регистрация
+    </button>
+  </div>
+</nav>

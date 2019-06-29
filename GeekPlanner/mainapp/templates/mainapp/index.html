@@ -1,0 +1,20 @@
+{% extends 'mainapp/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+  <section class="d-flex justify-content-center carousel">
+    <div class="d-flex align-items-center flex-column description">
+      <h1 class="font-weight-bold text-uppercase text-center mb-4">
+        GeekPlanner
+      </h1>
+      <h4 class="text-center mb-4">
+        Менеджер досок и карточек, который подходит как для индивидуальной,
+        так и для командной работы - повысьте свою продуктивность уже сегодня!
+      </h4>
+      <button type="button" class="btn btn-primary font-weight-bold btn-trial">
+        <h2 class="text-uppercase text-bold">Опробовать</h2>
+      </button>
+    </div>
+    <img class="mr-4" src="{% static 'img/service.png' %}" alt="" style="height: 100%;">
+  </section>
+{% endblock %}

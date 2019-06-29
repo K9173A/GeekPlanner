@@ -1,0 +1,64 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background-color: #fffdef;
+  // background-color: blue;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: Optima, Segoe, "Segoe UI", Candara, Calibri, Arial, sans-serif
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-wrapper {
+  flex: 1;
+}
+
+footer {
+  background-color: #26315d;
+
+  h5 {
+    color: #fffdef;
+  }
+}
+
+.carousel {
+  height: 600px;
+  background: linear-gradient(90deg, #fffdef, #adb5bd);
+  background-color: #fffdef;
+
+  .description {
+    height: 100%;
+    width: 400px;
+    padding: 64px 0 64px 0;
+    h1 {
+      color: #26315d;
+    }
+    h5 {
+      color: #26315d;
+    }
+  }
+}
+
+//.carousel .carousel-item {
+//  height: 300px;
+//}
+.item img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-height: 300px;
+}
+
+@import "blocks/menu";
+@import "blocks/button";
