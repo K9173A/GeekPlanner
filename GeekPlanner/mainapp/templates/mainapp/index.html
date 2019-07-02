@@ -11,9 +11,11 @@
         Менеджер досок и карточек, который подходит как для индивидуальной,
         так и для командной работы - повысьте свою продуктивность уже сегодня!
       </h4>
-      <button type="button" class="btn btn-primary font-weight-bold btn-trial">
-        <h2 class="text-uppercase text-bold">Опробовать</h2>
-      </button>
+      <a class="btn btn-primary font-weight-bold btn-trial" href="{% url 'auth:register' %}">
+        <h2 class="text-uppercase text-bold">
+          Опробовать
+        </h2>
+      </a>
     </div>
     <img class="mr-4" src="{% static 'img/service.png' %}" alt="" style="height: 100%;">
   </section>
