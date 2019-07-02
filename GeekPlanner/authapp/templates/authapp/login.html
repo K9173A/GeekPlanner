@@ -1,10 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'authapp/base.html' %}
+
+{% block content %}
+  <div class="container">
+    <div class="row justify-content-md-center">
+      <div class="card my-4 gp-form">
+        <div class="card-header text-center text-uppercase font-weight-bold">
+          Вход
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data" id="login-form">
+            {% csrf_token %}
+            {% for field in login_form %}
+              <div class="form-group">
+                <label class="control-label small">
+                  {{ field.label }}
+                </label>
+                {{ field }}
+              </div>
+            {% endfor %}
+            <input class="btn btn-primary col-12" form="login-form" type="submit" value="Войти">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

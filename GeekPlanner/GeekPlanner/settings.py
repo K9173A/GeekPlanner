@@ -12,24 +12,24 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'm-$8#^xgw-ctn!bah#2jw!!2=_%@b(kof#$-@7-_p0@e8zd9!8'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# ============================================================================
+# Debug settings
+# ============================================================================
 DEBUG = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
+# ============================================================================
+# Hosts & Domains
+# ============================================================================
 ALLOWED_HOSTS = ['*']
+DOMAIN_NAME = 'http://localhost:8000'
 
-
+# ============================================================================
 # Application definition
-
+# ============================================================================
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mainapp',
+    'authapp',
 ]
 
 MIDDLEWARE = [
@@ -70,10 +71,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'GeekPlanner.wsgi.application'
 
-
+# ============================================================================
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
+# ============================================================================
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -85,51 +86,59 @@ DATABASES = {
     }
 }
 
-
+# ============================================================================
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
-
+# ============================================================================
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-
+# ============================================================================
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
-
+# ============================================================================
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
-
+# ============================================================================
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-
+# ============================================================================
+# Root URL for static content
 STATIC_URL = '/static/'
-
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
-
+# Directories for static content
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+# URL for media content: 127.0.0.1:8000/media/
 MEDIA_URL = '/media/'
-
+# Project root directory of media content
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Project thumbnails are stored in the /media/project_thumbnails/ directory
 PROJECT_THUMBNAIL_DIR = 'project_thumbnails'
+# User avatars are stored in the /media/user_avatars/ directory
 USER_AVATARS_DIR = 'user_avatars'
+
+# ============================================================================
+# Email
+# ============================================================================
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = '25'
+EMAIL_HOST_USER = 'admin@geekplanner.local'
+EMAIL_HOST_PASSWORD = 'admin'
+EMAIL_USE_SSL = False
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = 'tmp/emails/'
+
+# ============================================================================
+# Authentication
+# ============================================================================
+# List of backends used for user authentication
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
+# Model which we use for authentication
+AUTH_USER_MODEL = 'authapp.User'
