@@ -20,6 +20,7 @@ SECRET_KEY = 'm-$8#^xgw-ctn!bah#2jw!!2=_%@b(kof#$-@7-_p0@e8zd9!8'
 # ============================================================================
 DEBUG = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+DATA_DIR = os.path.join(BASE_DIR, 'testing_data')
 
 # ============================================================================
 # Hosts & Domains
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mainapp',
     'authapp',
+    'plannerapp',
 ]
 
 MIDDLEWARE = [
@@ -79,7 +81,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'geekplanner',
-        'USER': 'admin',
+        'USER': 'postgres',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
         'PORT': '5432'
@@ -139,6 +141,8 @@ EMAIL_FILE_PATH = 'tmp/emails/'
 # Authentication
 # ============================================================================
 # List of backends used for user authentication
-AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
+AUTHENTICATION_BACKENDS = (
+    ('django.contrib.auth.backends.ModelBackend',)
+)
 # Model which we use for authentication
 AUTH_USER_MODEL = 'authapp.User'
