@@ -4,4 +4,14 @@
     background-color: #26315c;
     color: #fffdef;
   }
+
+  @at-root #{&}__error {
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 8px;
+    color: #721c24;
+    background-color: #f8d7da;
+    margin-bottom: 4px;
+    border-radius: .25rem;
+  }
 }
