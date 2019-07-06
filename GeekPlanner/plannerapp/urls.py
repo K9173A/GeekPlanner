@@ -6,5 +6,5 @@ import plannerapp.views as plannerapp
 app_name = 'plannerapp'
 
 urlpatterns = [
-    path('projects/', plannerapp.projects, name='projects'),
+    path('projects/', plannerapp.ProjectListView.as_view(), name='projects'),
 ]
