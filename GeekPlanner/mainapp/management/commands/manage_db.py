@@ -70,7 +70,10 @@ class Command(BaseCommand):
                     for item in data:
                         if table is User:
                             User.objects.create_user(**item)
-                        else:
+                        elif table is Project:
+                            if 'owner' in item.keys():
+                                owner = User.objects.filter(pk=item['owner']).first()
+                                item['owner'] = owner if owner else None
                             table(**item).save()
 
                 elif option_key == 'show':
