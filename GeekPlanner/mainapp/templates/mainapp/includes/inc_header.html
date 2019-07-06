@@ -1,34 +1,54 @@
 {% load staticfiles %}
 
-<nav class="navbar navbar-expand-lg menu shadow p-3">
+<nav class="navbar navbar-expand-lg menu p-3">
   <a class="navbar-brand" href="{% url 'main:index' %}">
     GEEKPLANNER
   </a>
   <ul class="nav navbar-nav mx-auto">
     <li>
       <a href="{% url 'main:index' %}"
-         class="nav-link rounded font-weight-bold menu__item
+         class="nav-link rounded font-weight-bold text-center mx-2 menu__item
           {% if request.resolver_match.url_name == 'index' %}menu__item--active{% else %}menu__item{% endif %}">
         Главная
       </a>
     </li>
     <li>
-      <a class="nav-link rounded font-weight-bold menu__item" href="#">
+      <a class="nav-link rounded font-weight-bold text-center mx-2 menu__item" href="#">
         Расценки
       </a>
     </li>
     <li>
-      <a class="nav-link rounded font-weight-bold menu__item" href="#">
+      <a class="nav-link rounded font-weight-bold text-center mx-2 menu__item" href="#">
         Опции
       </a>
     </li>
+    {% if user.is_authenticated %}
+      <li>
+        <a href="{% url 'planner:projects' %}"
+           class="nav-link rounded font-weight-bold text-center mx-2 menu__item
+            {% if request.resolver_match.url_name == 'projects' %}menu__item--active{% else %}menu__item{% endif %}">
+          Проекты
+        </a>
+      </li>
+    {% endif %}
   </ul>
-  <div class="btn-group" role="group">
-    <a class="btn btn-outline-primary font-weight-bold btn-register" href="{% url 'auth:login' %}">
-      Вход
-    </a>
-    <a class="btn btn-outline-primary font-weight-bold btn-register" href="{% url 'auth:register' %}">
-      Регистрация
-    </a>
-  </div>
+  {% if user.is_authenticated %}
+    <div class="btn-group" role="group">
+      <a class="btn btn-outline-primary font-weight-bold btn-register" href="{% url 'auth:logout' %}">
+        Выход
+      </a>
+      <a class="btn btn-outline-primary font-weight-bold btn-register" href="#">
+        Профиль
+      </a>
+    </div>
+  {% else %}
+    <div class="btn-group" role="group">
+      <a class="btn btn-outline-primary font-weight-bold btn-register" href="{% url 'auth:login' %}">
+        Вход
+      </a>
+      <a class="btn btn-outline-primary font-weight-bold btn-register" href="{% url 'auth:register' %}">
+        Регистрация
+      </a>
+    </div>
+  {% endif %}
 </nav>
