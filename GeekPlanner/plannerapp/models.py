@@ -7,7 +7,7 @@ from authapp.models import User
 class Project(models.Model):
     title = models.CharField(verbose_name='Название', max_length=64)
     description = models.TextField(verbose_name='Описание', max_length=256, blank=True)
-    owner = models.OneToOneField(User, verbose_name='Владелец', null=True, on_delete=models.SET_NULL)
+    owner = models.ForeignKey(User, verbose_name='Владелец', null=True, on_delete=models.SET_NULL)
     date_created = models.DateTimeField(verbose_name='Создан', auto_now_add=True)
     thumbnail = models.ImageField(verbose_name='Превью', upload_to=settings.PROJECT_THUMBNAIL_DIR, blank=True)
     is_active = models.BooleanField(verbose_name='Активность', default=True)

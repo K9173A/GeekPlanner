@@ -2,19 +2,57 @@
 {% load staticfiles %}
 
 {% block content %}
-<section>
-  {% if projects %}
-    {% for project in projects %}
-      <div class="thumbnail">
-        <img src="{{ project.thumbnail.url }}" alt="ProjectThumbnail">
-        <div class="caption">
-          <h3>{{ project.title }}</h3>
-          <p>{{ project.description }}</p>
-          <button>Перейти</button>
+  <div class="container">
+    <div class="gp-projects d-flex">
+      <div class="py-4 gp-projects__left-sidebar">
+        Меню
+      </div>
+      <div class="py-4 gp-projects__main flex-grow-1">
+        <div class="px-3 gp-projects__main-menu">
+          <a class="btn btn-primary" href="#">
+            Создать проект
+          </a>
+          <a class="btn btn-primary" href="#">
+            Новые
+          </a>
+          <a class="btn btn-primary" href="#">
+            Активные
+          </a>
+        </div>
+        <div class="px-3 py-2 gp-projects__main-content">
+          {% for project in projects %}
+            <div class="my-2 d-flex align-content-stretch gp-projects__main-item rounded-top">
+              <div class="gp-projects__main-thumbnail">
+                <img class="gp-projects__main-img" src="https://via.placeholder.com/160" alt="ProjectThumbnail">
+                <div class="gp-projects__main-owner">
+                  <div>{{ project.date_created }}</div>
+                  <div>{{ project.owner.first_name }}{{ project.owner.last_name }}</div>
+                </div>
+              </div>
+              <div class="gp-projects__main-summary">
+                <a class="font-weight-bold" href="#">
+                  {{ project.title }}
+                </a>
+                <hr class="gp-hr">
+                <div class="gp-projects__main-description">
+                  {{ project.description }}
+                </div>
+                <hr class="gp-hr">
+                <div class="container">
+                  <div class="row">
+                    <div class="col-8 gp-projects__main-tags">
+                      <a class="btn tag" href="#">Python</a>
+                      <a class="btn tag" href="#">VueJS</a>
+                      <a class="btn tag" href="#">Django</a>
+                      <a class="btn tag" href="#">Linux</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
         </div>
       </div>
-    {% endfor %}
-  {% endif %}
-  efefefef
-</section>
+    </div>
+  </div>
 {% endblock %}
