@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -130,7 +129,7 @@ USER_AVATARS_DIR = 'user_avatars'
 # Email
 # ============================================================================
 EMAIL_HOST = 'localhost'
-EMAIL_PORT = '25'
+EMAIL_PORT = '1025'
 EMAIL_HOST_USER = 'admin@geekplanner.local'
 EMAIL_HOST_PASSWORD = 'admin'
 EMAIL_USE_SSL = False

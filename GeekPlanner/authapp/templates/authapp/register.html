@@ -16,6 +16,13 @@
                   {{ field.label }}
                 </label>
                 {{ field }}
+                <div class="gp-form__errors mt-2">
+                  {% for error in field.errors %}
+                    <div class="gp-form__error">
+                      {{ error|escape }}
+                    </div>
+                  {% endfor %}
+                </div>
               </div>
             {% endfor %}
             <input class="btn btn-primary col-12" form="register-form" type="submit" value="Зарегистрироваться">

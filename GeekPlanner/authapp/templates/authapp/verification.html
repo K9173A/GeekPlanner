@@ -1,0 +1,20 @@
+{% extends 'authapp/base.html' %}
+
+{% block content %}
+  <div class="container">
+    <div class="raw rounded-lg">
+      {% if user %}
+        <h3>Учётная запись активирована!</h3>
+        <p>Добро пожаловать</p>
+      {% else %}
+        <h3>Верификация не пройдена!</h3>
+        <p>Инструкция по активации учётной записи находится на Вашей почте</p>
+        <p>С Уважением,</p>
+        <p>Администрация GeekPlanner</p>
+      {% endif %}
+      <a class="btn btn-primary" href="{% url 'mainapp:index' %}">
+        На главную
+      </a>
+    </div>
+  </div>
+{% endblock %}

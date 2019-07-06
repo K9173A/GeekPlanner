@@ -23,7 +23,7 @@ import mainapp.views as mainapp
 
 urlpatterns = [
     path('', include('mainapp.urls', namespace='main')),
-    # path('workspace/', include('plannerapp.urls', namespace='planner')),
+    path('workspace/', include('plannerapp.urls', namespace='planner')),
     # path('admin/', include('adminapp.urls', namespace='admin')),
     path('auth/', include('authapp.urls', namespace='auth'))
 ]

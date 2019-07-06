@@ -25,20 +25,23 @@ def send_verify_mail(user):
 
 
 def verify(request, email, activation_key):
+    """
+    Verifies user activation key.
+    :param request: request object.
+    :param email: user email address.
+    :param activation_key: user activation key.
+    :return: rendered page.
+    """
     try:
         user = User.objects.get(email=email)
-        # Если код активации отличается или код активации просрочен, то возвращаемся к верификации
-        if user.activation_key != activation_key or user.is_activation_key_expired():
-            return render(request, 'authapp/verification.html')
 
-        # Активируем учётную запись пользователя
-        user.is_active = True
-        # Сохраняем изменения в учётной записи пользователя
-        user.save()
-        # Логиним пользователя с использованием конкретного backend'а
+        if user.activation_key == activation_key and not user.is_activation_key_expired():
+            user.is_active = True
+            user.save()
+
         login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
-    # В случае исключения выходим на главную страницу
+        return render(request, 'authapp/verification.html')
     except Exception as e:
         return HttpResponseRedirect(reverse('main:index'))
 
@@ -72,7 +75,7 @@ def login_user(request):
                     return HttpResponseRedirect(request.POST['next'])
                 # Если следующий адрес 'next' не был найден, то отказываемся от
                 # рендеринга и направляемся снова в urls.py
-                return HttpResponseRedirect(reverse('main:index'))
+                return HttpResponseRedirect(reverse('planner:projects'))
 
     # Если метод GET - то создаём пустую форму
     else:
@@ -113,14 +116,17 @@ def register_user(request):
         # request.FILES - словарь, содержащий все загруженные файлы
         register_form = UserRegisterForm(request.POST, request.FILES)
         # Запускает валидацию данных формы и возвращает булевой результат верности данных
+        print(register_form.errors)
         if register_form.is_valid():
             # Сохраняет данные формы в БД
             user = register_form.save()
             # Если отправка подтвердительного письма прошла успешно...
             if send_verify_mail(user):
                 # то переходим на главную сраницу
+                print('Сообщение подтверждения отправлено!')
                 return HttpResponseRedirect(reverse('main:index'))
             # в ином случае отправляемся к форме логина
+            print('Ошибка отправки сообщения!')
             return HttpResponseRedirect(reverse('auth:login'))
 
     # Если метод GET - то создаём пустую форму

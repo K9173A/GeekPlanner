@@ -15,7 +15,7 @@ def generate_activation_key(email):
     """
     random_string = str(random.random()).encode('utf-8')
     salt = hashlib.sha1(random_string).hexdigest()[:6]
-    return hashlib.sha1((email + salt)).encode('utf-8').hexdigest()
+    return hashlib.sha1((email + salt).encode('utf-8')).hexdigest()
 
 
 class UserLoginForm(AuthenticationForm):
@@ -32,6 +32,10 @@ class UserLoginForm(AuthenticationForm):
 
 class UserRegisterForm(UserCreationForm):
     """Form which appears when user clicks 'Register' button"""
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
+    email = forms.CharField(required=True)
+
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'password1', 'password2', 'email')
