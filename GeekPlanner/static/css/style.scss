@@ -5,8 +5,7 @@
 
 body {
   min-height: 100vh;
-  background-color: #fffdef;
-  // background-color: blue;
+  background-color: #fafafa;
 }
 
 html,
@@ -28,13 +27,13 @@ footer {
   background-color: #26315d;
 
   h5 {
-    color: #fffdef;
+    color: #fafafa;
   }
 }
 
 .carousel {
   height: 600px;
-  background: linear-gradient(90deg, #fffdef, #adb5bd);
+  background: linear-gradient(90deg, #fafafa, #adb5bd);
   background-color: #fffdef;
 
   .description {
@@ -63,3 +62,5 @@ footer {
 @import "blocks/menu";
 @import "blocks/button";
 @import "blocks/form";
+@import "blocks/project";
+@import "blocks/hr";

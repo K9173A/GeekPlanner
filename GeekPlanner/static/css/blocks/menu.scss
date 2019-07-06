@@ -6,8 +6,9 @@
 
   @at-root #{&}__item {
     color: #fffdef;
+    min-width: 128px;
     &:hover {
-      background-color: #364892;
+      background-color: #4457d0;
       color: #ffffff;
     }
   }
