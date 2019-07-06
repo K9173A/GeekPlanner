@@ -109,3 +109,6 @@ venv.bak/
 # CSS files (since we use SCSS)
 *.css
 *.css.map
+
+# Directory for tmp data
+tmp/
