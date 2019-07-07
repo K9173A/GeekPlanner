@@ -35,13 +35,23 @@ def verify(request, email, activation_key):
     try:
         user = User.objects.get(email=email)
 
-        if user.activation_key == activation_key and not user.is_activation_key_expired():
+        context = {
+            'activation_success': False
+        }
+
+        if user.activation_key != activation_key:
+            context['error'] = f'Ключ "{activation_key}" не является валидным!'
+        elif user.is_activation_key_expired():
+            context['error'] = f'Ключ "{activation_key}" не является активным!'
+        elif user.is_active:
+            context['error'] = f'Учётная запись "{email}" уже была активирована!'
+        else:
             user.is_active = True
             user.save()
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            context['activation_success'] = True
 
-        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-
-        return render(request, 'authapp/verification.html')
+        return render(request, 'authapp/verification.html', context)
     except Exception as e:
         return HttpResponseRedirect(reverse('main:index'))
 

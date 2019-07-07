@@ -1,20 +1,33 @@
 {% extends 'authapp/base.html' %}
 
 {% block content %}
-  <div class="container">
-    <div class="raw rounded-lg">
-      {% if user %}
-        <h3>Учётная запись активирована!</h3>
-        <p>Добро пожаловать</p>
+  <div class="container justify-content-center">
+    <div class="my-4 jumbotron">
+      {% if activation_success %}
+        <h1 class="text-uppercase">
+          Активация успешна
+        </h1>
+        <p class="lead">
+          Теперь Вы можете приступить к работе с карточками, перейдя в раздел "Проекты".
+        </p>
       {% else %}
-        <h3>Верификация не пройдена!</h3>
-        <p>Инструкция по активации учётной записи находится на Вашей почте</p>
-        <p>С Уважением,</p>
-        <p>Администрация GeekPlanner</p>
+        <h1 class="text-uppercase">
+          Ошибка активации
+        </h1>
+        <p class="lead">
+          {{ error }}
+        </p>
+        <p class="lead">
+          Следуйте инструкции, которая лежит в Вашем почтовом ящике.
+          Также вы можете обратиться за помощью к службе поддержки GeekPlanner.
+        </p>
       {% endif %}
-      <a class="btn btn-primary" href="{% url 'mainapp:index' %}">
-        На главную
-      </a>
+      <hr class="my-4">
+      <p class="lead">
+        <a class="btn btn-primary" href="{% url 'mainapp:index' %}">
+          OK
+        </a>
+      </p>
     </div>
   </div>
 {% endblock %}
