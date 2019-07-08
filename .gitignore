@@ -110,5 +110,6 @@ venv.bak/
 *.css
 *.css.map
 
-# Directory for tmp data
+# Django
 tmp/
+media/
