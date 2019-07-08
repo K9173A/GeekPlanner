@@ -9,30 +9,55 @@
       </div>
       <div class="py-4 gp-projects__main flex-grow-1">
         <div class="px-3 gp-projects__main-menu">
-          <a class="btn btn-primary" href="#">
-            Создать проект
-          </a>
-          <a class="btn btn-primary" href="#">
-            Новые
-          </a>
-          <a class="btn btn-primary" href="#">
-            Активные
-          </a>
+          <h3>
+            Все проекты
+          </h3>
+          <div class="d-flex justify-content-between align-items-center py-2">
+            <span class="text-uppercase">
+              {{ object_list|length }} проектов
+            </span>
+            <div class="btn-group" role="group">
+              <a class="btn btn-primary" href="{% url 'planner:create_project' %}">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </a>
+              <a class="btn btn-primary" href="#">
+                <i class="fa fa-filter" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
         </div>
         <div class="px-3 py-2 gp-projects__main-content">
           {% for project in object_list %}
             <div class="my-2 d-flex align-content-stretch gp-projects__main-item rounded-top">
               <div class="gp-projects__main-thumbnail">
-                <img class="gp-projects__main-img" src="https://via.placeholder.com/160" alt="ProjectThumbnail">
-                <div class="gp-projects__main-owner">
-                  <div>{{ project.date_created }}</div>
-                  <div>{{ project.owner.first_name }}{{ project.owner.last_name }}</div>
+                <img class="gp-projects__main-img" src="{{ project.thumbnail.url }}" alt="ProjectThumbnail">
+                <div class="gp-projects__main-owner text-align-center">
+                  <div>
+                    {{ project.date_created }}
+                  </div>
+                  <div>
+                    {% if project.owner %}
+                      {{ project.owner.first_name }}{{ project.owner.last_name }}
+                    {% else %}
+                      Unknown creator
+                    {% endif %}
+                  </div>
                 </div>
               </div>
               <div class="gp-projects__main-summary">
-                <a class="font-weight-bold" href="#">
-                  {{ project.title }}
-                </a>
+                <div class="d-flex justify-content-between">
+                  <a class="font-weight-bold" href="#">
+                    {{ project.title }}
+                  </a>
+                  <div class="btn-group" role="group">
+                    <a class="btn btn-outline-primary" href="{% url 'planner:delete_project' project.pk %}">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </a>
+                    <a class="btn btn-outline-primary" href="{% url 'planner:update_project' project.pk %}">
+                      <i class="fa fa-cogs" aria-hidden="true"></i>
+                    </a>
+                  </div>
+                </div>
                 <hr class="gp-hr">
                 <div class="gp-projects__main-description">
                   {{ project.description }}
@@ -50,6 +75,10 @@
                 </div>
               </div>
             </div>
+          {% empty %}
+            <h5 class="text-uppercase text-center">
+              Увы, но проектов не найдено
+            </h5>
           {% endfor %}
         </div>
       </div>

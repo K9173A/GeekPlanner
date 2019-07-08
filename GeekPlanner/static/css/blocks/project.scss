@@ -12,10 +12,14 @@
     border-bottom: 1px solid lightgray;
   }
 
+  @at-root #{&}__main-content {
+    min-height: 512px;
+  }
+
   @at-root #{&}__main-item {
     min-height: 128px;
     border: 1px solid lightgray;
-    background-color: #fbfbfb;
+    background-color: #ffffff;
   }
 
   @at-root #{&}__main-thumbnail {
