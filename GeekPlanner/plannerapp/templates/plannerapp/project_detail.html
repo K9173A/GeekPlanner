@@ -1,0 +1,32 @@
+{% extends 'plannerapp/base.html' %}
+
+{% block content %}
+  <div class="container">
+    <div class="gp-board my-4">
+      <div class="gp-board__heading text-center pt-2">
+        <h3 class="font-weight-bold">
+          {{ object.title }}
+        </h3>
+        <hr>
+        <div class="d-flex px-2 py-2">
+          <a class="btn btn-primary" href="{% url 'planner:create_card' object.pk %}" type="button">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+      {% for card in card_list %}
+        <div class="gp-card px-2 py-2 mx-2 my-2">
+          <a href="#">{{ card.title }}</a>
+          <div class="btn-group" role="group">
+            <a class="btn btn-outline-primary" href="{% url 'planner:delete_card' card.pk project.pk %}">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+            </a>
+            <a class="btn btn-outline-primary" href="{% url 'planner:update_card' card.pk project.pk %}">
+              <i class="fa fa-cogs" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

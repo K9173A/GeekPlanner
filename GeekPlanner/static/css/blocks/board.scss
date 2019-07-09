@@ -1,0 +1,12 @@
+.gp-board {
+  min-height: 768px;
+  border-radius: 0.5em;
+  border: 1px solid #adb5bd;
+  background-color: #ececec;
+  overflow: hidden;
+
+  @at-root #{&}__heading {
+    background-color: #dee2e6;
+    color: #26315c;
+  }
+}

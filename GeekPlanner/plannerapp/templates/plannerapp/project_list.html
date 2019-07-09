@@ -46,7 +46,7 @@
               </div>
               <div class="gp-projects__main-summary">
                 <div class="d-flex justify-content-between">
-                  <a class="font-weight-bold" href="#">
+                  <a class="font-weight-bold" href="{% url 'planner:project_details' project.pk %}">
                     {{ project.title }}
                   </a>
                   <div class="btn-group" role="group">
