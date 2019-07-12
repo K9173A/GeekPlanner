@@ -1,8 +1,9 @@
 from django.shortcuts import render
+from django.views import View
 
 
-def index(request):
-    context = {
-        'title': 'IndexPage'
-    }
-    return render(request, 'mainapp/index.html', context)
+class IndexPageView(View):
+    template_name = 'mainapp/index.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, {'title': 'Главная'})

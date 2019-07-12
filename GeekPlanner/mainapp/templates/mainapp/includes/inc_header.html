@@ -8,7 +8,7 @@
     <li>
       <a href="{% url 'main:index' %}"
          class="nav-link rounded font-weight-bold text-center mx-2 menu__item
-          {% if request.resolver_match.url_name == 'index' %}menu__item--active{% else %}menu__item{% endif %}">
+          {% if request.resolver_match.url_name == 'index' %}menu__item--active{% endif %}">
         Главная
       </a>
     </li>
@@ -26,10 +26,16 @@
       <li>
         <a href="{% url 'planner:projects' %}"
            class="nav-link rounded font-weight-bold text-center mx-2 menu__item
-            {% if request.resolver_match.url_name == 'projects' %}menu__item--active{% else %}menu__item{% endif %}">
+            {% if request.resolver_match.url_name == 'projects' %}menu__item--active{% endif %}">
           Проекты
         </a>
       </li>
+      {% if user.is_superuser %}
+        <a href="{% url 'admin:users' %}"
+           class="nav-link rounded font-weight-bold text-center mx-2 menu__item">
+          Админка
+        </a>
+      {% endif %}
     {% endif %}
   </ul>
   {% if user.is_authenticated %}
@@ -37,7 +43,7 @@
       <a class="btn btn-outline-primary font-weight-bold btn-register" href="{% url 'auth:logout' %}">
         Выход
       </a>
-      <a class="btn btn-outline-primary font-weight-bold btn-register" href="#">
+      <a class="btn btn-outline-primary font-weight-bold btn-register" href="{% url 'auth:edit' %}">
         Профиль
       </a>
     </div>

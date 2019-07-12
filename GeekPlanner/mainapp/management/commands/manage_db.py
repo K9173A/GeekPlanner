@@ -43,15 +43,33 @@ class Command(BaseCommand):
             type=str,
             help='Shows data of specific table.'
         )
+        parser.add_argument(
+            '--create-superuser',
+            action='store_true',
+            help='Creates superuser "admin" in the database.'
+        )
 
     def handle(self, *args, **options):
+        """
+        Executes commands by handling specified keys.
+        :param args: additional arguments.
+        :param options: command keys and values.
+        :return: None.
+        """
         tables = {
             'Project': Project,
             'User': User,
         }
 
         for option_key, option_value in options.items():
-            if option_key in ['verbosity', 'settings', 'pythonpath', 'traceback', 'no_color'] or option_value is None:
+            if option_key in ['verbosity', 'settings', 'pythonpath', 'traceback', 'no_color']:
+                continue
+
+            if option_key == 'create_superuser' and option_value:
+                User.objects.create_superuser('admin', 'admin@geekplaner.local', 'admin')
+                continue
+
+            if option_value is None or option_value is False:
                 continue
 
             for table_name in option_value:
