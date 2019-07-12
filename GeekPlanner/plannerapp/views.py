@@ -10,7 +10,7 @@ from plannerapp.forms import ProjectForm, CardForm
 
 @method_decorator(login_required, name='dispatch')
 class ProjectListView(ListView):
-    """Renders a list of projects available for current user."""
+    """Renders a list of projects available for the current user."""
     model = Project
 
     def get_queryset(self):
@@ -22,7 +22,7 @@ class ProjectListView(ListView):
 
     def get_context_data(self, **kwargs):
         """
-        Returns context data for displaying the list of objects.
+        Returns context data for displaying the object.
         :param kwargs: additional key-value arguments.
         :return: context data for the template.
         """
@@ -40,7 +40,7 @@ class ProjectCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         """
-        Returns context data for displaying the list of objects.
+        Returns context data for displaying the object.
         :param kwargs: additional key-value arguments.
         :return: context data for the template.
         """
@@ -67,7 +67,7 @@ class ProjectUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         """
-        Returns context data for displaying the list of objects.
+        Returns context data for displaying the object.
         :param kwargs: additional key-value arguments.
         :return: context data for the template.
         """
@@ -84,7 +84,7 @@ class ProjectDeleteView(DeleteView):
 
     def get_context_data(self, **kwargs):
         """
-        Returns context data for displaying the list of objects.
+        Returns context data for displaying the object.
         :param kwargs: additional key-value arguments.
         :return: context data for the template.
         """
@@ -100,7 +100,7 @@ class ProjectDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         """
-        Returns context data for displaying the list of objects.
+        Returns context data for displaying the object.
         :param kwargs: additional key-value arguments.
         :return: context data for the template.
         """
@@ -125,7 +125,7 @@ class CardCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         """
-        Returns context data for displaying the list of objects.
+        Returns context data for displaying the object.
         :param kwargs: additional key-value arguments.
         :return: context data for the template.
         """
@@ -159,7 +159,7 @@ class CardUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         """
-        Returns context data for displaying the list of objects.
+        Returns context data for displaying the object.
         :param kwargs: additional key-value arguments.
         :return: context data for the template.
         """
@@ -183,7 +183,7 @@ class CardDeleteView(DeleteView):
 
     def get_context_data(self, **kwargs):
         """
-        Returns context data for displaying the list of objects.
+        Returns context data for displaying the object.
         :param kwargs: additional key-value arguments.
         :return: context data for the template.
         """

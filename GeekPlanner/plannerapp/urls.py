@@ -14,5 +14,4 @@ urlpatterns = [
     path('create_card/<int:project_pk>/', plannerapp.CardCreateView.as_view(), name='create_card'),
     path('delete_card/<int:pk>/project/<int:project_pk>/', plannerapp.CardDeleteView.as_view(), name='delete_card'),
     path('update_card/<int:pk>/project/<int:project_pk>/', plannerapp.CardUpdateView.as_view(), name='update_card'),
-    # path('card_details/<int:pk>/', plannerapp.CardDetailView.as_view(), name='card_details'),
 ]
