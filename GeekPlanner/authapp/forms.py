@@ -62,7 +62,7 @@ class UserEditForm(UserChangeForm):
     """Form which appears when user clicks 'Edit' button"""
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'password', 'email')
+        fields = ('username', 'first_name', 'last_name', 'password')
 
     def __init__(self, *args, **kwargs):
         super(UserEditForm, self).__init__(*args, **kwargs)
