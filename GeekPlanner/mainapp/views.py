@@ -1,9 +1,12 @@
 from django.shortcuts import render
-from django.views import View
+from django.views.generic.base import TemplateView
 
 
-class IndexPageView(View):
+class IndexView(TemplateView):
+    """View of the index page."""
     template_name = 'mainapp/index.html'
 
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, {'title': 'Главная'})
+    def get_context_data(self, **kwargs):
+        context = super(IndexView, self).get_context_data(**kwargs)
+        context['title'] = 'Главная'
+        return context

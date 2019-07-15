@@ -6,5 +6,5 @@ import mainapp.views as mainapp
 app_name = 'mainapp'
 
 urlpatterns = [
-    path('', mainapp.IndexPageView.as_view(), name='index'),
+    path('', mainapp.IndexView.as_view(), name='index'),
 ]
