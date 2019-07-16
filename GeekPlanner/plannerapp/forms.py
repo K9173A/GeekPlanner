@@ -24,7 +24,7 @@ class CardForm(forms.ModelForm):
     """Form which is being used to create/edit Card."""
     class Meta:
         model = Card
-        fields = ('title', 'content')
+        fields = ('title', 'description')
 
     def __init__(self, *args, **kwargs):
         """

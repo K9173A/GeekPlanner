@@ -1,0 +1,20 @@
+{% extends 'authapp/base.html' %}
+
+{% block content %}
+  <div class="container justify-content-center">
+    <div class="my-4 jumbotron">
+      <h1 class="text-uppercase">
+        Активация успешна
+      </h1>
+      <p class="lead">
+        Теперь Вы можете приступить к работе с карточками, перейдя в раздел "Проекты".
+      </p>
+      <hr class="my-4">
+      <p class="lead">
+        <a class="btn btn-primary" href="{% url 'mainapp:index' %}">
+          OK
+        </a>
+      </p>
+    </div>
+  </div>
+{% endblock %}

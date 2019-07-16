@@ -1,0 +1,11 @@
+Здравствуйте!
+
+Спасибо за регистрацию на сервисе GeekPlanner.
+
+Для активации Вашей учётной записи перейдите по следующей ссылке:
+http://localhost:8000{% url 'auth:django_registration_activate' activation_key %}
+
+Данная ссылка будет активна на подяжении {{ expiration_days }} дней.
+
+С Уважением,
+Администрация GeekPlanner

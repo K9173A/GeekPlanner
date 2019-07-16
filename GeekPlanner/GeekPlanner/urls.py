@@ -17,14 +17,32 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
-import mainapp.views as mainapp
-
 
 urlpatterns = [
-    path('', include('mainapp.urls', namespace='main')),
-    path('workspace/', include('plannerapp.urls', namespace='planner')),
-    path('admin/', include('adminapp.urls', namespace='admin')),
-    path('auth/', include('authapp.urls', namespace='auth'))
+    path(
+        '',
+        include('mainapp.urls', namespace='main')
+    ),
+    path(
+        'workspace/',
+        include('plannerapp.urls', namespace='planner')
+    ),
+    path(
+        'admin/',
+        include('adminapp.urls', namespace='admin')
+    ),
+    path(
+        'authentication/',
+        include('authapp.urls', namespace='auth')
+    ),
+    path(
+        'authentication/',
+        include('django_registration.backends.activation.urls')
+    ),
+    path(
+        'authentication/',
+        include('django.contrib.auth.urls')
+    ),
 ]
 
 if settings.DEBUG:

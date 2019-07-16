@@ -1,19 +1,16 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.views.generic import FormView, RedirectView
+from django.views.generic import FormView, RedirectView, TemplateView
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.urls import reverse, reverse_lazy
 from django.utils.http import is_safe_url
 from django.utils.decorators import method_decorator
-from django.core.mail import send_mail
-from django.conf import settings
 from django.db import transaction
 
-from authapp.models import User
-from authapp.forms import UserLoginForm, UserRegisterForm, UserEditForm, UserProfileEditForm
+from authapp.forms import UserLoginForm, UserRegistrationForm, UserEditForm, UserProfileEditForm
 
 
 class LoginView(FormView):
@@ -69,6 +66,7 @@ class LoginView(FormView):
 
 
 class LogoutView(RedirectView):
+    """Logs user out"""
     url = reverse_lazy('main:index')
 
     def get(self, request, *args, **kwargs):
@@ -84,76 +82,37 @@ class LogoutView(RedirectView):
         return super(LogoutView, self).get(request, *args, **kwargs)
 
 
-def send_verify_mail(user):
+class RegistrationCompleteView(TemplateView):
+    """View for a page which congratulates user with successful registration."""
+    template_name = 'django_registration/registration_complete.html'
+
+    def get_context_data(self, **kwargs):
+        """
+        Returns context data for displaying the object.
+        :param kwargs: additional key-value arguments.
+        :return: context data for the template.
+        """
+        context = super(RegistrationCompleteView, self).get_context_data(**kwargs)
+        context['title'] = 'Регистрация завершена'
+        return context
+
+
+class RegistrationClosedView(TemplateView):
     """
-    Sends verification mail to the specific e-mail address.
-    :param user: user, receiver of mail.
-    :return: boolean result of mail sending.
+    View for a page which shows instead of registration form in case of the flag:
+    settings.REGISTRATION_OPEN = False
     """
-    verify_link = reverse('auth:verify', args=[user.email, user.activation_key])
-    title = f'Подтверждение учётной записи {user.username}'
-    message = f'''
-        Для подтверждения учётной записи {user.username} на портале {settings.DOMAIN_NAME}
-        перейдите по ссылке:\n{settings.DOMAIN_NAME}{verify_link}
-    '''
-    return send_mail(title, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
+    template_name = 'django_registration/registration_closed.html'
 
-
-def verify(request, email, activation_key):
-    """
-    Verifies user activation key.
-    :param request: request object.
-    :param email: user email address.
-    :param activation_key: user activation key.
-    :return: rendered page.
-    """
-    try:
-        user = User.objects.get(email=email)
-
-        context = {
-            'activation_success': False
-        }
-
-        if user.activation_key != activation_key:
-            context['error'] = f'Ключ "{activation_key}" не является валидным!'
-        elif user.is_activation_key_expired():
-            context['error'] = f'Ключ "{activation_key}" не является активным!'
-        elif user.is_active:
-            context['error'] = f'Учётная запись "{email}" уже была активирована!'
-        else:
-            user.is_active = True
-            user.save()
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            context['activation_success'] = True
-
-        return render(request, 'authapp/verification.html', context)
-    except Exception as e:
-        return HttpResponseRedirect(reverse('main:index'))
-
-
-def register_user(request):
-    """
-    For POST method - registers user.
-    For GET method - shows UserRegisterForm.
-    :param request: request object.
-    :return: rendered page.
-    """
-    if request.method == 'POST':
-        register_form = UserRegisterForm(request.POST, request.FILES)
-        if register_form.is_valid():
-            user = register_form.save()
-            if send_verify_mail(user):
-                return HttpResponseRedirect(reverse('main:index'))
-            return HttpResponseRedirect(reverse('auth:login'))
-    else:
-        register_form = UserRegisterForm()
-
-    context = {
-        'title': 'Регистрация',
-        'register_form': register_form
-    }
-
-    return render(request, 'authapp/register.html', context)
+    def get_context_data(self, **kwargs):
+        """
+        Returns context data for displaying the object.
+        :param kwargs: additional key-value arguments.
+        :return: context data for the template.
+        """
+        context = super(RegistrationClosedView, self).get_context_data(**kwargs)
+        context['title'] = 'Регистрация закрыта'
+        return context
 
 
 @method_decorator(login_required, name='dispatch')

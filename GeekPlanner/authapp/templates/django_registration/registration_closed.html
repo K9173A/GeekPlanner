@@ -1,0 +1,20 @@
+{% extends 'authapp/base.html' %}
+
+{% block content %}
+  <div class="container justify-content-center">
+    <div class="my-4 jumbotron">
+      <h1 class="text-uppercase">
+        Регистрация закрыта
+      </h1>
+      <p class="lead">
+        Извините, но в данный момент регистрация на сервисе GeekPlanner закрыта.
+      </p>
+      <hr class="my-4">
+      <p class="lead">
+        <a class="btn btn-primary" href="{% url 'mainapp:index' %}">
+          OK
+        </a>
+      </p>
+    </div>
+  </div>
+{% endblock %}

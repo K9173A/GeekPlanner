@@ -1,0 +1,21 @@
+{% extends 'authapp/base.html' %}
+
+{% block content %}
+  <div class="container justify-content-center">
+    <div class="my-4 jumbotron">
+      <h1 class="text-uppercase">
+        Ключ для активации был отправлен
+      </h1>
+      <p class="lead">
+        Проверьте Ваш email и следуйте инструкции по активации. В некоторых случаях письмо может быть в папке
+        для спама.
+      </p>
+      <hr class="my-4">
+      <p class="lead">
+        <a class="btn btn-primary" href="{% url 'mainapp:index' %}">
+          OK
+        </a>
+      </p>
+    </div>
+  </div>
+{% endblock %}

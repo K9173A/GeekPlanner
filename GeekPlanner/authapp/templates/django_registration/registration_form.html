@@ -10,7 +10,7 @@
         <div class="card-body">
           <form method="post" enctype="multipart/form-data" id="register-form">
             {% csrf_token %}
-            {% for field in register_form %}
+            {% for field in form %}
               <div class="form-group">
                 <label class="control-label small">
                   {{ field.label }}

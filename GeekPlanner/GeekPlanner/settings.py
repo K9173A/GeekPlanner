@@ -37,10 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # GeekPlanner applications
     'mainapp',
     'authapp',
     'plannerapp',
     'adminapp',
+    # 3rd-party applications
+    'django_registration',
 ]
 
 MIDDLEWARE = [
@@ -123,8 +126,10 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Project thumbnails are stored in the /media/project_thumbnails/ directory
 PROJECT_THUMBNAIL_DIR = 'project_thumbnails'
+DEFAULT_PROJECT_THUMBNAIL = os.path.join(PROJECT_THUMBNAIL_DIR, 'default-thumbnail.png')
 # User avatars are stored in the /media/user_avatars/ directory
 USER_AVATARS_DIR = 'user_avatars'
+DEFAULT_USER_AVATAR = os.path.join(USER_AVATARS_DIR, 'default-avatar.png')
 
 # ============================================================================
 # Email
@@ -146,3 +151,13 @@ AUTHENTICATION_BACKENDS = (
 )
 # Model which we use for authentication
 AUTH_USER_MODEL = 'authapp.User'
+
+# ============================================================================
+# Django-registration settings
+# ============================================================================
+# How long (in days) after signup an account has in which to activate
+ACCOUNT_ACTIVATION_DAYS = 7
+# A bool indicating whether registration of new accounts is currently permitted
+REGISTRATION_OPEN = True
+# An additional “salt” used in the process of generating signed activation keys.
+REGISTRATION_SALT = '8hb+6v_7TT3'

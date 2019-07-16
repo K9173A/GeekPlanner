@@ -1,21 +1,9 @@
-import hashlib
-import random
-
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
+
+from django_registration.forms import RegistrationForm
 
 from authapp.models import User, UserProfile
-
-
-def generate_activation_key(email):
-    """
-    Generates activation key from email and random salt.
-    :param email: email address string.
-    :return: activation key SHA1 hash.
-    """
-    random_string = str(random.random()).encode('utf-8')
-    salt = hashlib.sha1(random_string).hexdigest()[:6]
-    return hashlib.sha1((email + salt).encode('utf-8')).hexdigest()
 
 
 class UserLoginForm(AuthenticationForm):
@@ -25,37 +13,36 @@ class UserLoginForm(AuthenticationForm):
         fields = ('username', 'password')
 
     def __init__(self, *args, **kwargs):
+        """
+        Applies Twitter Bootstrap styles to the form fields.
+        :param args: additional arguments.
+        :param kwargs: additional key-value arguments.
+        """
         super(UserLoginForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
 
 
-class UserRegisterForm(UserCreationForm):
-    """Form which appears when user clicks 'Register' button"""
+class UserRegistrationForm(RegistrationForm):
+    """Form for the two-step user authentication."""
+    # Requires to fill the following additional fields in the form:
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
     email = forms.CharField(required=True)
 
-    class Meta:
+    class Meta(RegistrationForm.Meta):
         model = User
         fields = ('username', 'first_name', 'last_name', 'password1', 'password2', 'email')
 
     def __init__(self, *args, **kwargs):
-        super(UserRegisterForm, self).__init__(*args, **kwargs)
+        """
+        Applies Twitter Bootstrap styles to the form fields.
+        :param args: additional arguments.
+        :param kwargs: additional key-value arguments.
+        """
+        super(UserRegistrationForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
-
-    def save(self, commit=True):
-        """
-        Saves user to the database.
-        :param commit: Commits unsaved model when False.
-        :return: instances that have been saved to the database.
-        """
-        user = super(UserRegisterForm, self).save()
-        user.is_active = False
-        user.activation_key = generate_activation_key(user.email)
-        user.save()
-        return user
 
 
 class UserEditForm(UserChangeForm):
@@ -65,6 +52,11 @@ class UserEditForm(UserChangeForm):
         fields = ('username', 'first_name', 'last_name', 'password')
 
     def __init__(self, *args, **kwargs):
+        """
+        Applies Twitter Bootstrap styles to the form fields.
+        :param args: additional arguments.
+        :param kwargs: additional key-value arguments.
+        """
         super(UserEditForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
@@ -77,6 +69,11 @@ class UserProfileEditForm(forms.ModelForm):
         fields = ('avatar', 'gender')
 
     def __init__(self, *args, **kwargs):
+        """
+        Applies Twitter Bootstrap styles to the form fields.
+        :param args: additional arguments.
+        :param kwargs: additional key-value arguments.
+        """
         super(UserProfileEditForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
