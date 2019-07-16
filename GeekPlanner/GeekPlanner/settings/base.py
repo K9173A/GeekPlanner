@@ -1,7 +1,9 @@
 """
-
+This module defines basic settings used on both: development and production
+configuration settings.
 """
 import os
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'm-$8#^xgw-ctn!bah#2jw!!2=_%@b(kof#$-@7-_p0@e8zd9!8'
