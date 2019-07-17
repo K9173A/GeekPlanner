@@ -1,11 +1,14 @@
+"""
+Module for plannerapp views.
+"""
 from django.views.generic import DeleteView, CreateView, UpdateView, DetailView
 from django.views.generic.list import ListView
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
-from plannerapp.models import Project, Card
-from plannerapp.forms import ProjectForm, CardForm
+from .models import Project, Card
+from .forms import ProjectForm, CardForm
 
 
 @method_decorator(login_required, name='dispatch')
@@ -18,7 +21,8 @@ class ProjectListView(ListView):
         Get the list of items for this view.
         :return: list of active projects.
         """
-        return super().get_queryset().filter(is_active=True).order_by('date_created')
+        return super(ProjectListView, self).get_queryset().\
+            filter(is_active=True).order_by('date_created')
 
     def get_context_data(self, **kwargs):
         """
@@ -26,7 +30,7 @@ class ProjectListView(ListView):
         :param kwargs: additional key-value arguments.
         :return: context data for the template.
         """
-        context = super().get_context_data(**kwargs)
+        context = super(ProjectListView, self).get_context_data(**kwargs)
         context['title'] = 'Проекты'
         return context
 
@@ -44,7 +48,7 @@ class ProjectCreateView(CreateView):
         :param kwargs: additional key-value arguments.
         :return: context data for the template.
         """
-        context = super().get_context_data(**kwargs)
+        context = super(ProjectCreateView, self).get_context_data(**kwargs)
         context['title'] = 'Новый проект'
         return context
 
@@ -71,7 +75,7 @@ class ProjectUpdateView(UpdateView):
         :param kwargs: additional key-value arguments.
         :return: context data for the template.
         """
-        context = super().get_context_data(**kwargs)
+        context = super(ProjectUpdateView, self).get_context_data(**kwargs)
         context['title'] = 'Редактирование проекта'
         return context
 
@@ -88,7 +92,7 @@ class ProjectDeleteView(DeleteView):
         :param kwargs: additional key-value arguments.
         :return: context data for the template.
         """
-        context = super().get_context_data(**kwargs)
+        context = super(ProjectDeleteView, self).get_context_data(**kwargs)
         context['title'] = 'Удалить проект'
         return context
 
@@ -104,7 +108,7 @@ class ProjectDetailView(DetailView):
         :param kwargs: additional key-value arguments.
         :return: context data for the template.
         """
-        context = super().get_context_data(**kwargs)
+        context = super(ProjectDetailView, self).get_context_data(**kwargs)
         context['title'] = 'Проект'
         context['card_list'] = Card.objects.filter(project=kwargs['object'].pk)
         return context
@@ -187,8 +191,7 @@ class CardDeleteView(DeleteView):
         :param kwargs: additional key-value arguments.
         :return: context data for the template.
         """
-        context = super().get_context_data(**kwargs)
+        context = super(CardDeleteView, self).get_context_data(**kwargs)
         context['title'] = 'Удалить карточку'
         context['project_pk'] = self.kwargs['project_pk']
         return context
-

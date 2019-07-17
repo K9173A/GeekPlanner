@@ -100,11 +100,11 @@ USE_TZ = True
 # Root URL for static content
 STATIC_URL = '/static/'
 # Directories for static content
-STATICFILES_DIRS = (os.path.join(BASE_DIR, '../../static'),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, '../static'),)
 # URL for media content: 127.0.0.1:8000/media/
 MEDIA_URL = '/media/'
 # Project root directory of media content
-MEDIA_ROOT = os.path.join(BASE_DIR, '../../media')
+MEDIA_ROOT = os.path.join(BASE_DIR, '../media')
 # Project thumbnails are stored in the /media/project_thumbnails/ directory
 PROJECT_THUMBNAIL_DIR = 'project_thumbnails'
 DEFAULT_PROJECT_THUMBNAIL = os.path.join(PROJECT_THUMBNAIL_DIR, 'default-thumbnail.png')

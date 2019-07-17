@@ -1,10 +1,13 @@
+"""
+Module for mainapp URLs.
+"""
 from django.urls import path
 
-import mainapp.views as mainapp
+from .views import IndexView
 
 
 app_name = 'mainapp'
 
 urlpatterns = [
-    path('', mainapp.IndexView.as_view(), name='index'),
+    path('', IndexView.as_view(), name='index'),
 ]

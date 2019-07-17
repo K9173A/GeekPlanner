@@ -1,6 +1,9 @@
+"""
+Module for plannerapp forms.
+"""
 from django import forms
 
-from plannerapp.models import Project, Card
+from .models import Project, Card
 
 
 class ProjectForm(forms.ModelForm):
@@ -16,7 +19,7 @@ class ProjectForm(forms.ModelForm):
         :param kwargs: additional key-value parameters.
         """
         super(ProjectForm, self).__init__(*args, **kwargs)
-        for name, field in self.fields.items():
+        for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
 
 
@@ -33,5 +36,5 @@ class CardForm(forms.ModelForm):
         :param kwargs: additional key-value parameters.
         """
         super(CardForm, self).__init__(*args, **kwargs)
-        for name, field in self.fields.items():
+        for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'

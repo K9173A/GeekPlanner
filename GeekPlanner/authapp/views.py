@@ -1,3 +1,6 @@
+"""
+Module for authapp views.
+"""
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
@@ -10,7 +13,7 @@ from django.utils.http import is_safe_url
 from django.utils.decorators import method_decorator
 from django.db import transaction
 
-from authapp.forms import UserLoginForm, UserRegistrationForm, UserEditForm, UserProfileEditForm
+from .forms import UserLoginForm, UserEditForm, UserProfileEditForm
 
 
 class LoginView(FormView):
@@ -117,6 +120,7 @@ class RegistrationClosedView(TemplateView):
 
 @method_decorator(login_required, name='dispatch')
 class UserUpdateView(FormView):
+    """Allows to edit User form."""
     template_name = 'authapp/user_update_form.html'
     success_url = reverse_lazy('main:index')
 

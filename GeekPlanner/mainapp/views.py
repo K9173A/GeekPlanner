@@ -1,3 +1,6 @@
+"""
+Module for mainapp views.
+"""
 from django.views.generic.base import TemplateView
 
 

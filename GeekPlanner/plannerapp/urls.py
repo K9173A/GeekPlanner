@@ -1,3 +1,6 @@
+"""
+Module for plannerapp URLs.
+"""
 from django.urls import path
 
 import plannerapp.views as plannerapp

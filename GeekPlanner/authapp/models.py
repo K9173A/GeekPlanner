@@ -1,3 +1,6 @@
+"""
+Module for authapp models.
+"""
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.dispatch import receiver
@@ -8,7 +11,6 @@ from django_registration.signals import user_activated
 
 class User(AbstractUser):
     """Default user model."""
-    pass
 
 
 class UserProfile(models.Model):

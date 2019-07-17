@@ -1,3 +1,6 @@
+"""
+Module for authapp forms.
+"""
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
 
@@ -19,7 +22,7 @@ class UserLoginForm(AuthenticationForm):
         :param kwargs: additional key-value arguments.
         """
         super(UserLoginForm, self).__init__(*args, **kwargs)
-        for name, field in self.fields.items():
+        for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
 
 
@@ -41,7 +44,7 @@ class UserRegistrationForm(RegistrationForm):
         :param kwargs: additional key-value arguments.
         """
         super(UserRegistrationForm, self).__init__(*args, **kwargs)
-        for name, field in self.fields.items():
+        for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
 
 
@@ -58,7 +61,7 @@ class UserEditForm(UserChangeForm):
         :param kwargs: additional key-value arguments.
         """
         super(UserEditForm, self).__init__(*args, **kwargs)
-        for name, field in self.fields.items():
+        for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
 
 
@@ -75,5 +78,5 @@ class UserProfileEditForm(forms.ModelForm):
         :param kwargs: additional key-value arguments.
         """
         super(UserProfileEditForm, self).__init__(*args, **kwargs)
-        for name, field in self.fields.items():
+        for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
