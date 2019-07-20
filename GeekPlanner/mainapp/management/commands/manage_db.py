@@ -3,8 +3,9 @@ import json
 
 from django.core.management.base import BaseCommand
 from django.conf import settings
+from django.db import transaction
 
-from authapp.models import User
+from authapp.models import User, UserProfile
 from plannerapp.models import Project
 
 
@@ -66,7 +67,9 @@ class Command(BaseCommand):
                 continue
 
             if option_key == 'create_superuser' and option_value:
-                User.objects.create_superuser('admin', 'admin@geekplaner.local', 'admin')
+                with transaction.atomic():
+                    user = User.objects.create_superuser('admin', 'admin@geekplaner.local', 'admin')
+                    UserProfile.objects.create(user=user)
                 continue
 
             if option_value is None or option_value is False:
