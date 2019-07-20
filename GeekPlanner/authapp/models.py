@@ -1,6 +1,8 @@
 """
 Module for authapp models.
 """
+import os
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.dispatch import receiver
@@ -25,11 +27,12 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(
         User,
+        related_name='profile',
         on_delete=models.CASCADE
     )
     avatar = models.ImageField(
         upload_to=settings.USER_AVATARS_DIR,
-        default=settings.DEFAULT_USER_AVATAR
+        blank=True
     )
     gender = models.CharField(
         verbose_name='Пол',
@@ -37,6 +40,17 @@ class UserProfile(models.Model):
         choices=GENDER_CHOICES,
         blank=True
     )
+
+    @property
+    def avatar_url(self):
+        """
+        Gets path to the user avatar with specified name. If it
+        does not exist, then replaces it with default avatar.
+        :return: path to the user avatar.
+        """
+        if self.avatar and hasattr(self.avatar, 'url'):
+            return self.avatar.url
+        return os.path.join(settings.STATIC_URL, 'img', 'default', 'avatar.png')
 
 
 @receiver(user_activated)

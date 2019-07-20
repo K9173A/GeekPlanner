@@ -142,7 +142,7 @@ class UserUpdateView(FormView):
         """
         context = self.get_context_data()
         context['user_form'] = UserEditForm(instance=request.user)
-        context['profile_form'] = UserProfileEditForm(instance=request.user.userprofile)
+        context['profile_form'] = UserProfileEditForm(instance=request.user.profile)
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -157,7 +157,7 @@ class UserUpdateView(FormView):
             self.request.POST, self.request.FILES, instance=request.user
         )
         profile_form = UserProfileEditForm(
-            self.request.POST, instance=request.user.userprofile
+            self.request.POST, instance=request.user.profile
         )
 
         if user_form.is_valid() and profile_form.is_valid():
