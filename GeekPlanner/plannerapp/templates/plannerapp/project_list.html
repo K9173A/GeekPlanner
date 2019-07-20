@@ -30,7 +30,7 @@
           {% for project in object_list %}
             <div class="my-2 d-flex align-content-stretch gp-projects__main-item rounded-top">
               <div class="gp-projects__main-thumbnail">
-                <img class="gp-projects__main-img" src="{{ project.thumbnail.url }}" alt="ProjectThumbnail">
+                <img class="gp-projects__main-img" src="{{ project.thumbnail_url }}" alt="ProjectThumbnail">
                 <div class="gp-projects__main-owner text-align-center">
                   <div>
                     {{ project.date_created }}

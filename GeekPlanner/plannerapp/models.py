@@ -1,6 +1,8 @@
 """
 Module for plannerapp models.
 """
+import os
+
 from django.db import models
 from django.conf import settings
 
@@ -38,8 +40,8 @@ class Project(models.Model):
     # Project preview image (optional) - helps to recognize your project
     thumbnail = models.ImageField(
         verbose_name='Превью',
-        upload_to=settings.PROJECT_THUMBNAIL_DIR,
-        default=settings.DEFAULT_PROJECT_THUMBNAIL
+        upload_to=settings.PROJECT_THUMBNAILS_DIR,
+        blank=True
     )
     # If project is not active, it was "deleted" by user
     is_active = models.BooleanField(
@@ -53,6 +55,17 @@ class Project(models.Model):
         :return: string with project title and date when it was created.
         """
         return f'{self.title} ({self.date_created})'
+
+    @property
+    def thumbnail_url(self):
+        """
+        Gets path to the project thumbnail with specified name. if it
+        does not exist, then replaces it with default thumbnail.
+        :return: path to the project thumbnail.
+        """
+        if self.thumbnail and hasattr(self.thumbnail, 'url'):
+            return self.thumbnail.url
+        return os.path.join(settings.STATIC_URL, 'img', 'default', 'thumbnail.png')
 
 
 class Card(models.Model):
