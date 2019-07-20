@@ -1,0 +1,19 @@
+.gp-sidebar {
+  background: linear-gradient(135deg, #5c3588, #a56e5b);
+  padding-top: 16px;
+  padding-bottom: 16px;
+  font-size: 1.2rem;
+
+  @at-root #{&}__item {
+    color: #fffdef;
+    min-width: 128px;
+    &:hover {
+      background-color: #ca774c;
+      color: #ffffff;
+    }
+  }
+
+  @at-root #{&}__item--active {
+    background-color: #b16248;
+  }
+}

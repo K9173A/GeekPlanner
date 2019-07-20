@@ -1,0 +1,23 @@
+.gp-sidebar {
+  background: linear-gradient(135deg, #5c3588, #a56e5b);
+  height: 100vh;
+  @at-root #{&}__heading {
+    height: 256px;
+  }
+}
+
+.gp-sidebar-menu {
+  width: 100%;
+  @at-root #{&}__heading {
+    color: #f7f2e0;
+    letter-spacing: 1.5px;
+  }
+  @at-root #{&}__item {
+    color: #f7f2e0;
+    &:hover {
+      color: #ffffff;
+      background-color: #85556f;
+      box-shadow: 2px 2px 3px 2px rgba(0, 0, 0, .1);
+    }
+  }
+}

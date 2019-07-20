@@ -28,7 +28,7 @@ urlpatterns = [
         include('plannerapp.urls', namespace='planner')
     ),
     path(
-        'admin/',
+        'administration/',
         include('adminapp.urls', namespace='admin')
     ),
     path(

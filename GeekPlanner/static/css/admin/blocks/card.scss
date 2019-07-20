@@ -1,0 +1,17 @@
+.gp-card {
+  min-width: 192px;
+  max-width: 256px;
+  overflow: hidden;
+  @at-root #{&}__img {
+    width: 128px;
+    height: 128px;
+  }
+  @at-root #{&}__btn {
+    padding: 16px;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

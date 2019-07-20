@@ -1,0 +1,53 @@
+<nav class="col-md-3 d-md-block sidebar gp-sidebar">
+  <div class="gp-sidebar__heading">
+    LOGO
+  </div>
+  <div class="flex-column">
+    <hr>
+    <ul class="nav flex-column gp-sidebar__menu">
+      <h5 class="gp-sidebar-menu__heading text-uppercase">
+        <i class="fa fa-database" aria-hidden="true"></i>
+        Данные пользователей
+      </h5>
+      <li class="nav-item">
+        <a href="{% url 'main:index' %}" class="nav-link rounded h5 font-weight-bold gp-sidebar-menu__item">
+          На главную
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{% url 'admin:users' %}" class="nav-link rounded h5 font-weight-bold gp-sidebar-menu__item">
+          Пользователи
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{% url 'admin:projects' %}" class="nav-link rounded h5 font-weight-bold gp-sidebar-menu__item">
+          Проекты
+        </a>
+      </li>
+    </ul>
+    <hr>
+    <ul class="nav flex-column gp-sidebar-menu">
+      <h5 class="gp-sidebar-menu__heading text-uppercase">
+        <i class="fa fa-cogs" aria-hidden="true"></i>
+        Управление сервером
+      </h5>
+      <li class="nav-item">
+        <a href="#" class="nav-link rounded h5 font-weight-bold gp-sidebar-menu__item">
+          Метрики
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link rounded h5 font-weight-bold gp-sidebar-menu__item">
+          Почта
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link h5 font-weight-bold gp-sidebar-menu__item">
+          Конфигурации
+        </a>
+      </li>
+    </ul>
+    <hr>
+  </div>
+</nav>
+

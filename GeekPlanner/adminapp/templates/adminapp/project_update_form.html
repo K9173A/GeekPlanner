@@ -1,0 +1,39 @@
+{% extends 'adminapp/base.html' %}
+
+{% block content %}
+  <div class="container">
+    <div class="row justify-content-md-center">
+      <div class="card my-4 gp-form">
+        <div class="card-header text-center text-uppercase font-weight-bold">
+          {{ title }}
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data" id="project-create-form">
+            {% csrf_token %}
+            {% for field in form %}
+              <div class="form-group">
+                <label class="control-label small">
+                  {{ field.name }}
+                </label>
+                {{ field }}
+                <div class="gp-form__errors mt-2">
+                  {% for error in field.errors %}
+                    <div class="gp-form__error">
+                      {{ error|escape }}
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endfor %}
+            <div class="d-flex justify-content-around px-4 py-4">
+              <input class="btn btn-primary" form="project-create-form" type="submit" value="Сохранить">
+              <a class="btn btn-primary" href="{% url 'admin:projects' %}" type="button">
+                Отметна
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
