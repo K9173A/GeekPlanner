@@ -22,7 +22,7 @@ install:
   - pip install -r requirements.txt
 
 before_script:
-  - sudo -i -u postgres psql -c 'create database active_type_test;'
+  - sudo -i -u postgres psql -h localhost -p 5433 -a -c 'create database active_type_test;'
 
 script:
   - chmod u+x run_server.sh
