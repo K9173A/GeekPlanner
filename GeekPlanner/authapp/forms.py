@@ -52,7 +52,7 @@ class UserEditForm(UserChangeForm):
     """Form which appears when user clicks 'Edit' button"""
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'password')
+        fields = ('username', 'first_name', 'last_name')
 
     def __init__(self, *args, **kwargs):
         """
