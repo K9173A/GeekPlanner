@@ -25,7 +25,9 @@ before_script:
   - sudo service postgresql start 10
   - sudo service postgresql status 10
   - sudo psql --version
-  - sudo -i -u postgres psql postgres -f create_db.sql
+  - cd $TRAVIS_BUILD_DIR
+  - ls
+  - sudo -i -u postgres psql postgres -f ${TRAVIS_BUILD_DIR}/create_db.sql
 
 script:
   - chmod u+x run_server.sh
