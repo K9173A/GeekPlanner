@@ -2,21 +2,27 @@ language: python
 python:
   - "3.6"
 dist: bionic
-sudo: false
-
-addons:
-  apt:
-    packages:
-      - git
+sudo: true
 
 services:
-  - postgresql # version 10.9
+  - postgresql
+
+addons:
+  postgresql: "10.9"
+  apt:
+    packages:
+      - postgresql-10.9
+      - postgresql-client-10.9
+
+env:
+  global:
+    - PGPORT=5433
 
 install:
   - pip install -r requirements.txt
 
 before_script:
-  - psql -U postgres postgres -f create_db.sql
+  - sudo -U postgres psql postgres -f create_db.sql
 
 script:
   - chmod u+x run_server.sh
