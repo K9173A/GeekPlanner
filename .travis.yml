@@ -8,25 +8,20 @@ services:
   - postgresql
 
 addons:
-  postgresql: "10.9"
+  postgresql: "10"
+  apt:
+    packages:
+      - postgresql-10
+      - postgresql-client-10
 
 env:
   global:
     - PGPORT=5433
 
-before_install:
-  - sudo apt-get update
-  - sudo apt-get --yes remove postgresql/*
-  - sudo apt-get install -y postgresql-10.9 postgresql-client-10.9
-  - sudo cp/etc/postgresql/{9.6,11}/pg_hba.conf
-  - sudo service postgresql restart 10.9
-
 install:
   - pip install -r requirements.txt
 
 before_script:
-  - sudo psql --vesion
-  - sudo service postgresql status 10.9
   - sudo -i -u postgres psql -h localhost -p 5433 -a -c 'create database active_type_test;'
 
 script:
