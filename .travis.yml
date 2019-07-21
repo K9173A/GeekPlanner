@@ -8,22 +8,14 @@ addons:
   apt:
     packages:
       - git
-      - python3-venv
 
 services:
   - postgresql # version 10.9
 
 install:
-  - git checkout 59465e1a128f0739d3119e2e99007ab637f0830c
-  - cd GeekPlanner
-  - python3 -m venv venv
-  - source venv/bin/activate
   - pip install -r requirements.txt
 
 before_script:
-  - python3 --version
-  - psql --verison
-  - systemctl status postgresql
   - psql -u postgres postgres -f create_db.sql
 
 script:
