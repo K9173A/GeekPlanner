@@ -24,6 +24,7 @@ install:
 before_script:
   - sudo /etc/init.d/postgresql start 10
   - sudo service postgresql status 10
+  - sudo psql --version
   - sudo -i -u postgres psql -h localhost -p 5433 -a -c 'create database active_type_test;'
 
 script:
