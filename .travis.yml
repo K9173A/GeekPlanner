@@ -22,7 +22,7 @@ install:
   - pip install -r requirements.txt
 
 before_script:
-  - sudo -U postgres psql postgres -f create_db.sql
+  - sudo -u postgres psql postgres -f create_db.sql
 
 script:
   - chmod u+x run_server.sh
