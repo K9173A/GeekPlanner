@@ -22,7 +22,7 @@ before_script:
   - psql postgres -f $TRAVIS_BUILD_DIR/create_db.sql -U postgres
 
 script:
-  - python manage.py test
+  - python $TRAVIS_BUILD_DIR/GeekPlanner/manage.py test --noinput
 
 branches:
   only:
