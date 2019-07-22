@@ -2,7 +2,6 @@ language: python
 python:
   - "3.6"
 dist: bionic
-sudo: true
 
 services:
   - postgresql
@@ -22,14 +21,13 @@ install:
   - pip install -r requirements.txt
 
 before_script:
-  - sudo service postgresql start 10
-  - sudo service postgresql status 10
-  - sudo psql --version
-  - chmod +x $TRAVIS_BUILD_DIR/create_db.sql
-  - sudo -i -u postgres psql postgres -f $TRAVIS_BUILD_DIR/create_db.sql
+  - chmod u+x run_server.sh
+  - service postgresql start 10
+  - service postgresql status 10
+  - psql --version
+  - psql postgres -f $TRAVIS_BUILD_DIR/create_db.sql -u postgres
 
 script:
-  - chmod u+x run_server.sh
   - ./run_server.sh
 
 branches:
