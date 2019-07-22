@@ -1,4 +1,5 @@
 # GeekPlanner
+[![Status](https://travis-ci.org/K9173A/GeekPlanner.svg?branch=andrei-dev)](https://travis-ci.org/K9173A/GeekPlanner)  
 Простое и удобное приложение для заметок.
 ### Цель создания проекта
 Данный проект создан в учебных целях - стабильность работы на текущем этапе не гарантируется! В будущем может быть

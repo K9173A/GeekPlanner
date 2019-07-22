@@ -22,7 +22,7 @@ before_script:
   - psql postgres -f $TRAVIS_BUILD_DIR/create_db.sql -U postgres
 
 script:
-  - ./run_server.sh development
+  - python manage.py test
 
 branches:
   only:
