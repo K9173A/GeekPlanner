@@ -22,8 +22,8 @@ install:
 
 before_script:
   - chmod u+x run_server.sh
-  - service postgresql start 10
-  - service postgresql status 10
+  - sudo service postgresql start 10
+  - sudo service postgresql status 10
   - psql --version
   - psql postgres -f $TRAVIS_BUILD_DIR/create_db.sql -u postgres
 
