@@ -68,7 +68,7 @@ DATABASES = {
         'USER': 'postgres',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
-        'PORT': os.getenv('PGPORT') if 'TRAVIS' in os.environ else '5432'
+        'PORT': '5432'
     }
 }
 

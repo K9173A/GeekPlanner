@@ -17,15 +17,12 @@ install:
   - pip install -r requirements.txt
 
 before_script:
-  - chmod u+x run_server.sh
   - sudo service postgresql start 10
   - sudo service postgresql status 10
-  - psql --version
-  - psql -c "SELECT * FROM pg_settings WHERE name = 'port';" -U postgres
   - psql postgres -f $TRAVIS_BUILD_DIR/create_db.sql -U postgres
 
 script:
-  - ./run_server.sh
+  - ./run_server.sh development
 
 branches:
   only:
