@@ -6,6 +6,9 @@ dist: bionic
 services:
   - postgresql
 
+env:
+  - GEEKPLANNER_DEVELOPMENT=true
+
 addons:
   postgresql: "10"
   apt:
@@ -20,6 +23,7 @@ before_script:
   - sudo service postgresql start 10
   - sudo service postgresql status 10
   - psql postgres -f $TRAVIS_BUILD_DIR/create_db.sql -U postgres
+  - python $TRAVIS_BUILD_DIR/GeekPlanner/manage.py migrate
 
 script:
   - python $TRAVIS_BUILD_DIR/GeekPlanner/manage.py test --noinput
