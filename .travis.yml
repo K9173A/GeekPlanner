@@ -25,6 +25,7 @@ before_script:
   - sudo service postgresql start 10
   - sudo service postgresql status 10
   - psql --version
+  - psql -c "SELECT * FROM pg_settings WHERE name = 'port';" -U postgres
   - psql postgres -f $TRAVIS_BUILD_DIR/create_db.sql -U postgres
 
 script:
