@@ -1,19 +1,11 @@
 .btn-register {
   min-width: 136px;
-  color: #fffdef;
-  border-color: #fffdef;
+  color: #fff;
+  border-color: #fff;
   &:hover {
-    background-color: #fffdef;
-    color: #26315d;
-    border-color: #fffdef;
-  }
-}
-
-.btn-trial {
-  background-color: #e9d16f;
-  border: none;
-  &:hover {
-    background-color: #f5dd70;
+    background-color: #fff;
+    color: #4485d0;
+    border-color: #fff;
   }
 }
 

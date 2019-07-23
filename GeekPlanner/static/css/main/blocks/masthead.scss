@@ -1,0 +1,20 @@
+.gp-masthead {
+  min-height: 600px;
+
+  @at-root #{&}__title {
+    color: #4485d0;
+    font-size: 3rem;
+    letter-spacing: 1.1rem;
+  }
+  @at-root #{&}__lead {
+    text-align: justify;
+    font-size: 1.5rem;
+    font-weight: 300;
+  }
+  @at-root #{&}__img {
+    height: 512px;
+  }
+  @at-root #{&}__btn {
+    min-width: 256px;
+  }
+}

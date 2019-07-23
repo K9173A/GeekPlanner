@@ -48,6 +48,12 @@ class Project(models.Model):
         verbose_name='Активность',
         default=True
     )
+    # Public projects are displayed for everybody, private projects
+    # are displayed only for project creator and his collaborators
+    is_public = models.BooleanField(
+        verbose_name='Публичность',
+        default=True
+    )
 
     def __str__(self):
         """

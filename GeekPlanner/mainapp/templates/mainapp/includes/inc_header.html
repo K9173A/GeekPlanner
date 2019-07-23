@@ -9,17 +9,19 @@
       <a href="{% url 'main:index' %}"
          class="nav-link rounded font-weight-bold text-center mx-2 menu__item
           {% if request.resolver_match.url_name == 'index' %}menu__item--active{% endif %}">
-        Главная
+        Main
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'main:pricing' %}"
+         class="nav-link rounded font-weight-bold text-center mx-2 menu__item
+         {% if request.resolver_match.url_name == 'pricing' %}menu__item--active{% endif %}">
+        Pricing
       </a>
     </li>
     <li>
       <a class="nav-link rounded font-weight-bold text-center mx-2 menu__item" href="#">
-        Расценки
-      </a>
-    </li>
-    <li>
-      <a class="nav-link rounded font-weight-bold text-center mx-2 menu__item" href="#">
-        Опции
+        Features
       </a>
     </li>
     {% if user.is_authenticated %}
@@ -27,13 +29,13 @@
         <a href="{% url 'planner:projects' %}"
            class="nav-link rounded font-weight-bold text-center mx-2 menu__item
             {% if request.resolver_match.url_name == 'projects' %}menu__item--active{% endif %}">
-          Проекты
+          Projects
         </a>
       </li>
       {% if user.is_superuser %}
         <a href="{% url 'admin:users' %}"
            class="nav-link rounded font-weight-bold text-center mx-2 menu__item">
-          Админка
+          Admin panel
         </a>
       {% endif %}
     {% endif %}
@@ -41,19 +43,19 @@
   {% if user.is_authenticated %}
     <div class="btn-group" role="group">
       <a class="btn btn-outline-primary font-weight-bold btn-register" href="{% url 'auth:logout' %}">
-        Выход
+        Sing out
       </a>
       <a class="btn btn-outline-primary font-weight-bold btn-register" href="{% url 'auth:edit' %}">
-        Профиль
+        Profile
       </a>
     </div>
   {% else %}
     <div class="btn-group" role="group">
       <a class="btn btn-outline-primary font-weight-bold btn-register" href="{% url 'auth:login' %}">
-        Вход
+        Sign in
       </a>
       <a class="btn btn-outline-primary font-weight-bold btn-register" href="{% url 'auth:django_registration_register' %}">
-        Регистрация
+        Sign up
       </a>
     </div>
   {% endif %}

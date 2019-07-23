@@ -3,20 +3,17 @@
   padding: 0;
 }
 
-body {
-  min-height: 100vh;
-  background-color: #fafafa;
-}
-
 html,
 body {
   height: 100%;
-  font-family: Optima, Segoe, "Segoe UI", Candara, Calibri, Arial, sans-serif;
 }
 
 body {
+  font-family: "Source Sans Pro",Helvetica,sans-serif;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: #fff;
 }
 
 .layout-wrapper {
@@ -24,41 +21,14 @@ body {
 }
 
 footer {
-  background-color: #26315d;
+  background-color: #f8f9fa;
 
   h5 {
-    color: #fafafa;
+    color: #495057;
   }
 }
 
-.carousel {
-  height: 600px;
-  background: linear-gradient(90deg, #fafafa, #adb5bd);
-  background-color: #fffdef;
-
-  .description {
-    height: 100%;
-    width: 400px;
-    padding: 64px 0 64px 0;
-    h1 {
-      color: #26315d;
-    }
-    h5 {
-      color: #26315d;
-    }
-  }
-}
-
-//.carousel .carousel-item {
-//  height: 300px;
-//}
-.item img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  min-height: 300px;
-}
-
+@import "blocks/masthead";
 @import "blocks/menu";
 @import "blocks/button.css";
 @import "blocks/form.css";
