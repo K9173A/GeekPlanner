@@ -21,8 +21,8 @@ class UserProfile(models.Model):
     FEMALE = 'W'
 
     GENDER_CHOICES = (
-        (MALE, 'Мужской'),
-        (FEMALE, 'Женский'),
+        (MALE, 'Male'),
+        (FEMALE, 'Female'),
     )
 
     user = models.OneToOneField(
@@ -31,11 +31,12 @@ class UserProfile(models.Model):
         on_delete=models.CASCADE
     )
     avatar = models.ImageField(
+        verbose_name='avatar',
         upload_to=settings.USER_AVATARS_DIR,
         blank=True
     )
     gender = models.CharField(
-        verbose_name='Пол',
+        verbose_name='gender',
         max_length=1,
         choices=GENDER_CHOICES,
         blank=True

@@ -2,7 +2,7 @@
 
 {% block content %}
   <div class="container">
-    <div class="gp-board my-4">
+    <div class="gp-board my-2">
       <div class="gp-board__heading text-center pt-2">
         <h3 class="font-weight-bold">
           {{ object.title }}
@@ -14,19 +14,21 @@
           </a>
         </div>
       </div>
-      {% for card in card_list %}
-        <div class="gp-card px-2 py-2 mx-2 my-2">
-          <a href="#">{{ card.title }}</a>
-          <div class="btn-group" role="group">
-            <a class="btn btn-outline-primary" href="{% url 'planner:delete_card' card.pk project.pk %}">
-              <i class="fa fa-trash" aria-hidden="true"></i>
-            </a>
-            <a class="btn btn-outline-primary" href="{% url 'planner:update_card' card.pk project.pk %}">
-              <i class="fa fa-cogs" aria-hidden="true"></i>
-            </a>
-          </div>
+      <div class="container">
+        <div class="card-deck mx-auto my-2">
+          {% for card in card_list %}
+            <div class="card shadow-sm {{ card.color }}">
+              <div class="card-header font-weight-normal">
+                {{ card.title }}
+              </div>
+              <div class="card-body">
+                {{ card.description }}
+              </div>
+              <a class="stretched-link" href="#"></a>
+            </div>
+          {% endfor %}
         </div>
-      {% endfor %}
+      </div>
     </div>
   </div>
 {% endblock %}

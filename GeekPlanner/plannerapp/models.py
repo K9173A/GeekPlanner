@@ -16,42 +16,42 @@ class Project(models.Model):
     """
     # Project name
     title = models.CharField(
-        verbose_name='Название',
+        verbose_name='title',
         max_length=64
     )
     # Short description of what project is about
     description = models.TextField(
-        verbose_name='Описание',
+        verbose_name='description',
         max_length=256,
         blank=True
     )
     # Creator of the project
     owner = models.ForeignKey(
         User,
-        verbose_name='Владелец',
+        verbose_name='owner',
         null=True,
         on_delete=models.SET_NULL
     )
     # Date when project was created
     date_created = models.DateTimeField(
-        verbose_name='Создан',
+        verbose_name='created',
         auto_now_add=True
     )
     # Project preview image (optional) - helps to recognize your project
     thumbnail = models.ImageField(
-        verbose_name='Превью',
+        verbose_name='thumbnail',
         upload_to=settings.PROJECT_THUMBNAILS_DIR,
         blank=True
     )
     # If project is not active, it was "deleted" by user
     is_active = models.BooleanField(
-        verbose_name='Активность',
+        verbose_name='activity',
         default=True
     )
-    # Public projects are displayed for everybody, private projects
-    # are displayed only for project creator and his collaborators
+    # Public projects are displayed for everybody
+    # Private projects are displayed only for collaborators
     is_public = models.BooleanField(
-        verbose_name='Публичность',
+        verbose_name='public',
         default=True
     )
 
@@ -74,41 +74,101 @@ class Project(models.Model):
         return os.path.join(settings.STATIC_URL, 'img', 'default', 'thumbnail.png')
 
 
-class Card(models.Model):
+class Category(models.Model):
     """
-    Card represents a simple task or note, or anything that is important.
+    User-defined category which card can be attached to.
     """
-    # A project where card is being stored
-    project = models.ForeignKey(
-        Project,
-        verbose_name='Проект',
-        on_delete=models.CASCADE
-    )
-    # Card name
-    title = models.CharField(
-        verbose_name='Заголовок',
+    # Category name
+    name = models.CharField(
+        verbose_name='name',
         max_length=64
     )
-    # Card text content
-    description = models.TextField(
-        verbose_name='Содержимое',
-        max_length=512,
-        blank=True
-    )
-    # Date when card was created
-    date_created = models.DateTimeField(
-        verbose_name='Создан',
-        auto_now_add=True
-    )
-    # If card is not active, it was "deleted" by user
+    # If category is not active, it was "deleted" by user
     is_active = models.BooleanField(
-        verbose_name='Активность',
+        verbose_name='activity',
         default=True
     )
 
     def __str__(self):
         """
-        Human-readable project representation.
+        Human-readable category representation.
+        :return: string with category name.
+        """
+        return self.name
+
+
+class Card(models.Model):
+    """
+    Card represents a simple task or note, or anything that is important.
+    """
+    LOWEST = 0
+    LOW = 1
+    NORMAL = 2
+    HIGH = 3
+    VERY_HIGH = 4
+    HIGHEST = 5
+
+    PRIORITY_CHOICES = (
+        (LOWEST, 'Lowest'),
+        (LOW, 'Low'),
+        (NORMAL, 'Normal'),
+        (HIGH, 'High'),
+        (VERY_HIGH, 'Very High'),
+        (HIGHEST, 'Highest')
+    )
+
+    # A project where card is being stored
+    project = models.ForeignKey(
+        Project,
+        verbose_name='project',
+        on_delete=models.CASCADE
+    )
+    # Card name
+    title = models.CharField(
+        verbose_name='title',
+        max_length=64
+    )
+    # Card text content
+    description = models.TextField(
+        verbose_name='content',
+        max_length=512,
+        blank=True
+    )
+    # Date when card was created
+    date_created = models.DateTimeField(
+        verbose_name='created',
+        auto_now_add=True
+    )
+    # If card is not active, it was "deleted" by user
+    is_active = models.BooleanField(
+        verbose_name='activity',
+        default=True
+    )
+    # Level of task importance
+    priority = models.IntegerField(
+        verbose_name='priority',
+        choices=PRIORITY_CHOICES,
+        default=NORMAL
+    )
+    # Task category (status)
+    category = models.ForeignKey(
+        Category,
+        verbose_name='category',
+        null=True,
+        on_delete=models.SET_NULL,
+    )
+
+    def __str__(self):
+        """
+        Human-readable card representation.
         :return: string with card title and date when it was created.
         """
         return f'{self.title} ({self.date_created})'
+
+    @property
+    def color(self):
+        """
+        Gets specific css class name depending on card priority level.
+        :return: css class name.
+        """
+        return f'gp-project-card__lvl{self.priority}'

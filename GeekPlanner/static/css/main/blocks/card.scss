@@ -1,3 +1,20 @@
-.gp-card {
-  background-color: #b3d7ff;
+.gp-project-card {
+  @at-root #{&}__lvl0 {
+    background-color: gray;
+  }
+  @at-root #{&}__lvl1 {
+    background-color: lightgray;
+  }
+  @at-root #{&}__lvl2 {
+    background-color: greenyellow;
+  }
+  @at-root #{&}__lvl3 {
+    background-color: yellow;
+  }
+  @at-root #{&}__lvl4 {
+    background-color: orange;
+  }
+  @at-root #{&}__lvl5 {
+    background-color: red;
+  }
 }

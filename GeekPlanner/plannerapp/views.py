@@ -31,7 +31,7 @@ class ProjectListView(ListView):
         :return: context data for the template.
         """
         context = super(ProjectListView, self).get_context_data(**kwargs)
-        context['title'] = 'Проекты'
+        context['title'] = 'Projects'
         return context
 
 
@@ -49,7 +49,7 @@ class ProjectCreateView(CreateView):
         :return: context data for the template.
         """
         context = super(ProjectCreateView, self).get_context_data(**kwargs)
-        context['title'] = 'Новый проект'
+        context['title'] = 'New project'
         return context
 
     def form_valid(self, form):
@@ -76,7 +76,7 @@ class ProjectUpdateView(UpdateView):
         :return: context data for the template.
         """
         context = super(ProjectUpdateView, self).get_context_data(**kwargs)
-        context['title'] = 'Редактирование проекта'
+        context['title'] = 'Edit project'
         return context
 
 
@@ -93,7 +93,7 @@ class ProjectDeleteView(DeleteView):
         :return: context data for the template.
         """
         context = super(ProjectDeleteView, self).get_context_data(**kwargs)
-        context['title'] = 'Удалить проект'
+        context['title'] = 'Delete project'
         return context
 
 
@@ -109,7 +109,7 @@ class ProjectDetailView(DetailView):
         :return: context data for the template.
         """
         context = super(ProjectDetailView, self).get_context_data(**kwargs)
-        context['title'] = 'Проект'
+        context['title'] = 'Project'
         context['card_list'] = Card.objects.filter(project=kwargs['object'].pk)
         return context
 
@@ -134,7 +134,7 @@ class CardCreateView(CreateView):
         :return: context data for the template.
         """
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Добавить карточку'
+        context['title'] = 'Add card'
         context['project_pk'] = self.kwargs['project_pk']
         return context
 
@@ -168,7 +168,7 @@ class CardUpdateView(UpdateView):
         :return: context data for the template.
         """
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Редактирование карточки'
+        context['title'] = 'Edit card'
         context['project_pk'] = self.kwargs['project_pk']
         return context
 
@@ -192,6 +192,6 @@ class CardDeleteView(DeleteView):
         :return: context data for the template.
         """
         context = super(CardDeleteView, self).get_context_data(**kwargs)
-        context['title'] = 'Удалить карточку'
+        context['title'] = 'Delete card'
         context['project_pk'] = self.kwargs['project_pk']
         return context
