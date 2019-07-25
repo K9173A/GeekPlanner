@@ -89,18 +89,14 @@ class UserUpdateView(FormView):
         user = User.objects.get(pk=kwargs['pk'])
 
         user_form = UserEditForm(
-            self.request.POST, self.request.FILES, instance=request.user, initial=user.__dict__
+            self.request.POST,
+            self.request.FILES,
+            instance=user
         )
         profile_form = UserProfileEditForm(
-            self.request.POST, instance=request.user.profile, initial=user.profile.__dict__
+            self.request.POST,
+            instance=user.profile,
         )
-
-        # TODO: ['gender'], валидация только для неуникальных (изменившихся значений)
-        if user_form.has_changed():
-            print(user_form.changed_data)
-
-        if profile_form.has_changed():
-            print(profile_form.changed_data)
 
         if user_form.is_valid() and profile_form.is_valid():
             with transaction.atomic():

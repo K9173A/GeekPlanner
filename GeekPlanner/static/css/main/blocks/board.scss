@@ -1,12 +1,43 @@
 .gp-board {
   min-height: 768px;
   border-radius: 0.5em;
-  border: 1px solid #adb5bd;
-  background-color: #ececec;
+  border: 2px solid #c6cace;
+  background-color: #ffffff;
   overflow: hidden;
 
   @at-root #{&}__heading {
-    background-color: #dee2e6;
     color: #26315c;
+  }
+
+  @at-root #{&}__hr {
+    margin: 0;
+    border-top: 2px solid rgba(0,0,0,.1);
+  }
+
+  @at-root #{&}__img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+
+  @at-root #{&}__btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+    padding: 0.6rem;
+  }
+
+  @at-root #{&}__card-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+    padding: 0.6rem;
   }
 }

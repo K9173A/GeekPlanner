@@ -6,9 +6,21 @@ from django.views.generic.list import ListView
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
-from .models import Project, Card
-from .forms import ProjectForm, CardForm
+from .models import Project, Card, Category
+from .forms import ProjectForm, CardForm, CategoryForm
+
+
+def get_default_categories():
+    """
+    Gets list of predefined categories.
+    :return: list of predefined Category objects.
+    """
+    return [
+        Category.objects.get_or_create(name=name)[0]
+        for name in ['TO-DO', 'Do Today', 'In Progress', 'Done']
+    ]
 
 
 @method_decorator(login_required, name='dispatch')
@@ -109,9 +121,28 @@ class ProjectDetailView(DetailView):
         :return: context data for the template.
         """
         context = super(ProjectDetailView, self).get_context_data(**kwargs)
+
+        categories = self.get_project_categories(kwargs['object'].pk)
+        categories_card_list = []
+        for category in categories:
+            cards = Card.objects.filter(
+                Q(project=kwargs['object'].pk) &
+                Q(is_active=True) &
+                Q(category=category)
+            )
+            categories_card_list.append(cards)
+
         context['title'] = 'Project'
-        context['card_list'] = Card.objects.filter(project=kwargs['object'].pk)
+        context['categories'] = categories
+        context['categories_card_list'] = categories_card_list
         return context
+
+    def get_project_categories(self, project_pk):
+        # TODO
+        return [
+            *get_default_categories(),
+            # Category.objects.filter(projects=project_pk),
+        ]
 
 
 @method_decorator(login_required, name='dispatch')
@@ -145,6 +176,7 @@ class CardCreateView(CreateView):
         :return: success_url by default.
         """
         form.instance.project = Project.objects.get(pk=self.kwargs['project_pk'])
+        form.instance.category = Category.objects.get(pk=self.kwargs['category_pk'])
         return super(CardCreateView, self).form_valid(form)
 
 
@@ -193,5 +225,54 @@ class CardDeleteView(DeleteView):
         """
         context = super(CardDeleteView, self).get_context_data(**kwargs)
         context['title'] = 'Delete card'
+        context['project_pk'] = self.kwargs['project_pk']
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class CategoryCreateView(CreateView):
+    """Creates new category (status block) in the project."""
+    model = Category
+    form_class = CategoryForm
+
+    def get_success_url(self):
+        """
+        Determines the URL to redirect to when the form is successfully validated.
+        :return: success URL.
+        """
+        return reverse('planner:project_details', args=(self.kwargs['project_pk'],))
+
+    def get_context_data(self, **kwargs):
+        """
+        Returns context data for displaying the object.
+        :param kwargs: additional key-value arguments.
+        :return: context data for the template.
+        """
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Add category'
+        context['project_pk'] = self.kwargs['project_pk']
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class CategoryDeleteView(DeleteView):
+    """Deletes category and returns to the project."""
+    model = Card
+
+    def get_success_url(self):
+        """
+        Determines the URL to redirect to when the form is successfully validated.
+        :return: success URL.
+        """
+        return reverse('planner:project_details', args=(self.kwargs['project_pk'],))
+
+    def get_context_data(self, **kwargs):
+        """
+        Returns context data for displaying the object.
+        :param kwargs: additional key-value arguments.
+        :return: context data for the template.
+        """
+        context = super(CategoryDeleteView, self).get_context_data(**kwargs)
+        context['title'] = 'Delete category'
         context['project_pk'] = self.kwargs['project_pk']
         return context

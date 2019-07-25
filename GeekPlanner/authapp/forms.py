@@ -28,14 +28,14 @@ class UserLoginForm(AuthenticationForm):
 
 class UserRegistrationForm(RegistrationForm):
     """Form for the two-step user authentication."""
-    # Requires to fill the following additional fields in the form:
+    # Requires to fill the following additional fields of the form:
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
     email = forms.CharField(required=True)
 
     class Meta(RegistrationForm.Meta):
         model = User
-        fields = ('username', 'first_name', 'last_name', 'password1', 'password2', 'email')
+        fields = ('username', 'first_name', 'last_name', 'password1', 'password2', 'email',)
 
     def __init__(self, *args, **kwargs):
         """
@@ -52,7 +52,7 @@ class UserEditForm(UserChangeForm):
     """Form which appears when user clicks 'Edit' button"""
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name')
+        fields = ('username', 'first_name', 'last_name', 'password',)
 
     def __init__(self, *args, **kwargs):
         """
@@ -69,7 +69,7 @@ class UserProfileEditForm(forms.ModelForm):
     """Form which contains additional information of User to edit."""
     class Meta:
         model = UserProfile
-        fields = ('avatar', 'gender')
+        fields = ('avatar', 'gender',)
 
     def __init__(self, *args, **kwargs):
         """

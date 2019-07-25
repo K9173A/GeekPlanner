@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db import transaction
 
 from authapp.models import User, UserProfile
-from plannerapp.models import Project
+from plannerapp.models import Project, Category
 
 
 def load_json_data(file_name):
@@ -49,6 +49,11 @@ class Command(BaseCommand):
             action='store_true',
             help='Creates superuser "admin" in the database.'
         )
+        parser.add_argument(
+            '--init-categories',
+            action='store_true',
+            help='Initializes Category with predefined values'
+        )
 
     def handle(self, *args, **options):
         """
@@ -71,6 +76,12 @@ class Command(BaseCommand):
                     user = User.objects.create_superuser('admin', 'admin@geekplaner.local', 'admin')
                     UserProfile.objects.create(user=user)
                 continue
+
+            if option_key == 'init_categories' and option_value:
+                Category.objects.get_or_create(name='TO-DO')
+                Category.objects.get_or_create(name='Do Today')
+                Category.objects.get_or_create(name='In Progress')
+                Category.objects.get_or_create(name='Done')
 
             if option_value is None or option_value is False:
                 continue

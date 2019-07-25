@@ -35,7 +35,7 @@ urlpatterns = [
         name='project_details'
     ),
     path(
-        'create_card/<int:project_pk>/',
+        'create_card/project/<int:project_pk>/category/<int:category_pk>/',
         plannerapp.CardCreateView.as_view(),
         name='create_card'
     ),
@@ -49,4 +49,19 @@ urlpatterns = [
         plannerapp.CardUpdateView.as_view(),
         name='update_card'
     ),
+    path(
+        'create_category/<int:pk>/project/<int:project_pk>/',
+        plannerapp.CategoryCreateView.as_view(),
+        name='create_category',
+    ),
+    # path(
+    #     'update_category/<int:pk>/project/<int:project_pk>/',
+    #     plannerapp.CategoryUpdateView.as_view(),
+    #     name='update_category',
+    # ),
+    path(
+        'delete_category/<int:pk>/project/<int:project_pk>/',
+        plannerapp.CategoryDeleteView.as_view(),
+        name='delete_category',
+    )
 ]

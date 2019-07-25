@@ -54,6 +54,11 @@ class Project(models.Model):
         verbose_name='public',
         default=True
     )
+    # Implements Many-To-Many relationship with UserProfile model
+    users = models.ManyToManyField(
+        User,
+        related_name='projects'
+    )
 
     def __str__(self):
         """
@@ -87,6 +92,11 @@ class Category(models.Model):
     is_active = models.BooleanField(
         verbose_name='activity',
         default=True
+    )
+    # Implements Many-To-Many relationship with Project model
+    projects = models.ManyToManyField(
+        Project,
+        related_name='categories'
     )
 
     def __str__(self):
@@ -156,6 +166,7 @@ class Card(models.Model):
         verbose_name='category',
         null=True,
         on_delete=models.SET_NULL,
+        default=Category.objects.get_or_create(name='TO-DO')[0].pk
     )
 
     def __str__(self):

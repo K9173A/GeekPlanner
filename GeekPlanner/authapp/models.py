@@ -24,17 +24,19 @@ class UserProfile(models.Model):
         (MALE, 'Male'),
         (FEMALE, 'Female'),
     )
-
+    # Implements One-To-One relationship with User model
     user = models.OneToOneField(
         User,
         related_name='profile',
         on_delete=models.CASCADE
     )
+    # User avatar
     avatar = models.ImageField(
         verbose_name='avatar',
         upload_to=settings.USER_AVATARS_DIR,
         blank=True
     )
+    # User gender: male or female
     gender = models.CharField(
         verbose_name='gender',
         max_length=1,

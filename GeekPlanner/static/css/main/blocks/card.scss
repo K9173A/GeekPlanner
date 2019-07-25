@@ -1,20 +1,28 @@
 .gp-project-card {
+  margin-bottom: 8px;
+
   @at-root #{&}__lvl0 {
-    background-color: gray;
+    background-color: #d3d3d3;
+    border-color: #898989;
   }
   @at-root #{&}__lvl1 {
-    background-color: lightgray;
+    background-color: #58a5d3;
+    border-color: #42799d;
   }
   @at-root #{&}__lvl2 {
-    background-color: greenyellow;
+    background-color: #00b800;
+    border-color: #009700;
   }
   @at-root #{&}__lvl3 {
-    background-color: yellow;
+    background-color: #dcdc00;
+    border-color: #949400;
   }
   @at-root #{&}__lvl4 {
-    background-color: orange;
+    background-color: #ffa500;
+    border-color: #c98000;
   }
   @at-root #{&}__lvl5 {
-    background-color: red;
+    background-color: #c90000;
+    border-color: #6a0000;
   }
 }
