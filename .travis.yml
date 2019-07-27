@@ -25,6 +25,7 @@ before_script:
   - psql postgres -f $TRAVIS_BUILD_DIR/create_db.sql -U postgres
 
 script:
+  - python $TRAVIS_BUILD_DIR/GeekPlanner/manage.py makemigrations
   - python $TRAVIS_BUILD_DIR/GeekPlanner/manage.py migrate
   - python $TRAVIS_BUILD_DIR/GeekPlanner/manage.py test authapp.tests
 
