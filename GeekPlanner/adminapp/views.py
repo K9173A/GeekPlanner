@@ -2,17 +2,18 @@
 Module for adminapp views.
 """
 from django.shortcuts import render, HttpResponseRedirect
-from django.views.generic import CreateView, DeleteView, UpdateView, FormView
+from django.views.generic import CreateView, DeleteView, UpdateView, FormView, DetailView
 from django.views.generic.list import ListView
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
 from django.db import transaction
 
+from adminapp.forms import UserCreateForm
 from authapp.models import User
 from authapp.forms import UserEditForm, UserProfileEditForm
-from plannerapp.models import Project
-from plannerapp.forms import ProjectForm
+from plannerapp.models import Project, Category
+from plannerapp.forms import ProjectForm, CategoryForm
 
 
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')
@@ -36,7 +37,8 @@ class UserListView(ListView):
         :return: context data for the template.
         """
         context = super(UserListView, self).get_context_data(**kwargs)
-        context['title'] = 'Пользователи'
+        context['title'] = 'Users'
+        context['create_url'] = reverse('admin:create_user')
         return context
 
 
@@ -47,7 +49,35 @@ class UserCreateView(CreateView):
     This functionality is allowed ONLY for administrators and superusers who have
     an access to the admin board.
     """
+    template_name = 'adminapp/user_form.html'
+    form_class = UserCreateForm
     success_url = reverse_lazy('admin:users')
+
+    def get_context_data(self, **kwargs):
+        """
+        Returns context data for displaying the object.
+        :param kwargs: additional key-value arguments.
+        :return: context data for the template.
+        """
+        context = super(UserCreateView, self).get_context_data(**kwargs)
+        context['title'] = 'Create user'
+        return context
+
+
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')
+class UserReadView(DetailView):
+    template_name = 'adminapp/user_detail.html'
+    model = User
+
+    def get_context_data(self, **kwargs):
+        """
+        Returns context data for displaying the object.
+        :param kwargs: additional key-value arguments.
+        :return: context data for the template.
+        """
+        context = super(UserReadView, self).get_context_data(**kwargs)
+        context['title'] = 'User information'
+        return context
 
 
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')
@@ -62,7 +92,7 @@ class UserUpdateView(FormView):
         :param kwargs: additional key-value arguments.
         :return: context data for the template.
         """
-        return {'title': 'Редактирование профиля'}
+        return {'title': 'Update user'}
 
     def get(self, request, *args, **kwargs):
         """
@@ -102,7 +132,7 @@ class UserUpdateView(FormView):
             with transaction.atomic():
                 user_form.save()
                 profile_form.save()
-            return HttpResponseRedirect(reverse('admin:projects'))
+            return HttpResponseRedirect(reverse('admin:users'))
 
         context = self.get_context_data()
         context['user_form'] = user_form
@@ -125,7 +155,7 @@ class UserDeleteView(DeleteView):
         :return: context data for the template.
         """
         context = super(UserDeleteView, self).get_context_data(**kwargs)
-        context['title'] = 'Удалить пользователя'
+        context['title'] = 'Delete user'
         return context
 
 
@@ -149,8 +179,37 @@ class ProjectListView(ListView):
         :return: context data for the template.
         """
         context = super(ProjectListView, self).get_context_data(**kwargs)
-        context['title'] = 'Проекты'
+        context['title'] = 'Projects'
+        context['create_url'] = reverse('admin:create_project')
         return context
+
+
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')
+class ProjectCreateView(CreateView):
+    """Creates a new project."""
+    template_name = 'adminapp/project_form.html'
+    model = Project
+    form_class = ProjectForm
+    success_url = reverse_lazy('admin:projects')
+
+    def get_context_data(self, **kwargs):
+        """
+        Returns context data for displaying the object.
+        :param kwargs: additional key-value arguments.
+        :return: context data for the template.
+        """
+        context = super(ProjectCreateView, self).get_context_data(**kwargs)
+        context['title'] = 'New project'
+        return context
+
+    def form_valid(self, form):
+        """
+        Validates form.
+        :param form: form instance.
+        :return: success_url by default.
+        """
+        form.instance.owner = self.request.user
+        return super(ProjectCreateView, self).form_valid(form)
 
 
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')
@@ -168,7 +227,7 @@ class ProjectUpdateView(UpdateView):
         :return: context data for the template.
         """
         context = super(ProjectUpdateView, self).get_context_data(**kwargs)
-        context['title'] = 'Редактирование проекта'
+        context['title'] = 'Edit project'
         return context
 
 
@@ -186,5 +245,55 @@ class ProjectDeleteView(DeleteView):
         :return: context data for the template.
         """
         context = super(ProjectDeleteView, self).get_context_data(**kwargs)
-        context['title'] = 'Удалить проект'
+        context['title'] = 'Delete project'
         return context
+
+
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')
+class CategoryListView(ListView):
+    """Renders list of all categories."""
+    template_name = 'adminapp/category_list.html'
+    model = Category
+
+    def get_queryset(self):
+        """
+        Get the list of items for this view.
+        :return: list of active projects.
+        """
+        return super(CategoryListView, self).get_queryset().order_by('name')
+
+    def get_context_data(self, **kwargs):
+        """
+        Returns context data for displaying the object.
+        :param kwargs: additional key-value arguments.
+        :return: context data for the template.
+        """
+        context = super(CategoryListView, self).get_context_data(**kwargs)
+        context['title'] = 'Categories'
+        context['create_url'] = reverse('admin:create_category')
+        return context
+
+
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')
+class CategoryCreateView(CreateView):
+    form_class = CategoryForm
+
+    def get_context_data(self, **kwargs):
+        """
+        Returns context data for displaying the object.
+        :param kwargs: additional key-value arguments.
+        :return: context data for the template.
+        """
+        context = super(CategoryCreateView, self).get_context_data(**kwargs)
+        context['title'] = 'Create category'
+        return context
+
+
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')
+class CategoryEditView(UpdateView):
+    pass
+
+
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')
+class CategoryDeleteView(DeleteView):
+    pass

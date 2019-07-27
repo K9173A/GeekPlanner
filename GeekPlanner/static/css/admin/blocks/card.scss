@@ -6,12 +6,4 @@
     width: 128px;
     height: 128px;
   }
-  @at-root #{&}__btn {
-    padding: 16px;
-    width: 16px;
-    height: 16px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
 }

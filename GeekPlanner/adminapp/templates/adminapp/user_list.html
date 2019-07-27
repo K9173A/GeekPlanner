@@ -15,19 +15,26 @@
           </div>
           <div class="card-footer d-flex justify-content-around">
             {% if user.is_active %}
-              <a href="{% url 'admin:delete_user' user.pk %}" class="btn btn-primary gp-card__btn">
+              <a href="{% url 'admin:delete_user' user.pk %}" class="btn btn-primary btn-fa">
                 <i class="fa fa-trash" aria-hidden="true"></i>
               </a>
-              <a href="{% url 'admin:update_user' user.pk %}" class="btn btn-primary gp-card__btn">
+              <a href="{% url 'admin:update_user' user.pk %}" class="btn btn-primary btn-fa">
                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
               </a>
+              <a href="{% url 'admin:read_user' user.pk %}" class="btn btn-primary btn-fa">
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
+              </a>
             {% else %}
-              <a href="#" class="btn btn-primary gp-card__btn">
+              <a href="#" class="btn btn-primary btn-fa">
                 <i class="fa fa-undo" aria-hidden="true"></i>
               </a>
             {% endif %}
           </div>
         </div>
+      {% empty %}
+        <h5 class="text-uppercase text-center">
+          No users were found.
+        </h5>
       {% endfor %}
     </div>
   </div>
