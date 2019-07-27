@@ -2,11 +2,21 @@
 Module for plannerapp models.
 """
 import os
+import functools
 
 from django.db import models
 from django.conf import settings
 
 from authapp.models import User
+
+
+def get_default_category_pk(name):
+    """
+    Gets default category PK
+    :param name: name of category
+    :return:
+    """
+    return Category.objects.get_or_create(name=name)[0].pk
 
 
 class Project(models.Model):
@@ -166,7 +176,7 @@ class Card(models.Model):
         verbose_name='category',
         null=True,
         on_delete=models.SET_NULL,
-        default=Category.objects.get_or_create(name='TO-DO')[0].pk
+        default=functools.partial(get_default_category_pk, name='TO-DO')
     )
 
     def __str__(self):
