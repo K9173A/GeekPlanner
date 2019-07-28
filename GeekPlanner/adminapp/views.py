@@ -290,10 +290,23 @@ class CategoryCreateView(CreateView):
 
 
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')
-class CategoryEditView(UpdateView):
+class CategoryUpdateView(UpdateView):
     pass
 
 
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')
 class CategoryDeleteView(DeleteView):
-    pass
+    """Deletes selected category and returns to the updated list."""
+    template_name = 'adminapp/category_confirm_delete.html'
+    model = Category
+    success_url = reverse_lazy('admin:projects')
+
+    def get_context_data(self, **kwargs):
+        """
+        Returns context data for displaying the object.
+        :param kwargs: additional key-value arguments.
+        :return: context data for the template.
+        """
+        context = super(CategoryDeleteView, self).get_context_data(**kwargs)
+        context['title'] = 'Delete category'
+        return context
