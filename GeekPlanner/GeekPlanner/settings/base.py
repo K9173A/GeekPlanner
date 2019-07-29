@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'plannerapp',
     'adminapp',
     # 3rd-party applications
+    'rest_framework',
     'django_registration',
 ]
 

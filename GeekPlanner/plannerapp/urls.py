@@ -54,14 +54,5 @@ urlpatterns = [
         plannerapp.CategoryCreateView.as_view(),
         name='create_category',
     ),
-    # path(
-    #     'update_category/<int:pk>/project/<int:project_pk>/',
-    #     plannerapp.CategoryUpdateView.as_view(),
-    #     name='update_category',
-    # ),
-    path(
-        'delete_category/<int:pk>/project/<int:project_pk>/',
-        plannerapp.CategoryDeleteView.as_view(),
-        name='delete_category',
-    )
+
 ]
