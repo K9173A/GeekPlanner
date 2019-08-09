@@ -19,29 +19,28 @@ from django.conf import settings
 
 
 urlpatterns = [
+    # path(
+    #     'api/admin/',
+    #     include('api.adminapp.urls', namespace='admin')
+    # ),
+    # path(
+    #     'api/auth/',
+    #     include('api.authapp.urls', namespace='auth')
+    # ),
+    # path(
+    #     'api/workspace/',
+    #     include('api.plannerapp.urls', namespace='planner')
+    # ),
+    # ========================================================================
+    # djoser authentication backends
+    # ========================================================================
     path(
-        '',
-        include('mainapp.urls', namespace='main')
+        'api/auth/',
+        include('djoser.urls')
     ),
     path(
-        'workspace/',
-        include('plannerapp.urls', namespace='planner')
-    ),
-    path(
-        'administration/',
-        include('adminapp.urls', namespace='admin')
-    ),
-    path(
-        'authentication/',
-        include('authapp.urls', namespace='auth')
-    ),
-    path(
-        'authentication/',
-        include('django_registration.backends.activation.urls')
-    ),
-    path(
-        'authentication/',
-        include('django.contrib.auth.urls')
+        'api/auth/',
+        include('djoser.urls.jwt')
     ),
 ]
 

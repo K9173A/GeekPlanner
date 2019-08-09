@@ -18,7 +18,6 @@ DOMAIN_NAME = 'http://localhost:8000'
 # ============================================================================
 DEBUG = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-DATA_DIR = os.path.join(BASE_DIR, '../../testing_data')
 
 # ============================================================================
 # Email

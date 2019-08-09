@@ -3,6 +3,9 @@ This module defines basic settings used on both: development and production
 configuration settings.
 """
 import os
+import datetime
+
+from corsheaders.defaults import default_headers
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -18,19 +21,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # GeekPlanner applications
-    'mainapp',
-    'authapp',
-    'plannerapp',
-    'adminapp',
     # 3rd-party applications
     'rest_framework',
-    'django_registration',
+    'djoser',
+    'corsheaders',
+    # GeekPlanner applications
+    'api.authapp',
+    'api.plannerapp',
+    # 'api.adminapp',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -123,11 +127,71 @@ AUTHENTICATION_BACKENDS = (
 AUTH_USER_MODEL = 'authapp.User'
 
 # ============================================================================
-# Django-registration settings
+# Django REST framework settings
 # ============================================================================
-# How long (in days) after signup an account has in which to activate
-ACCOUNT_ACTIVATION_DAYS = 7
-# A bool indicating whether registration of new accounts is currently permitted
-REGISTRATION_OPEN = True
-# An additional “salt” used in the process of generating signed activation keys.
-REGISTRATION_SALT = '8hb+6v_7TT3'
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    )
+}
+
+# ============================================================================
+# djoser settings
+# ============================================================================
+DJOSER = {
+    # URL to the frontend password reset page
+    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    # URL to the frontend username reset page
+    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
+    # URL to the frontend activation page
+    'ACTIVATION_URL': '#/activate/{uid}/{token}',
+    # User will be required to click activation link sent in email after
+    # creating an account and updating their email
+    'SEND_ACTIVATION_EMAIL': True,
+    # Dictionary which maps djoser serializer names to serializer classes
+    'SERIALIZERS': {},
+    'EMAIL': {
+        'activation': 'api.authapp.views.ActivationEmailView',
+    }
+}
+
+# Custom djoser settings needed to override some views, because by default
+# djoser uses Backend (Django rest) domain, but we need to connect to the
+# Frontend application which is located on a different port (and possibly
+# address).
+DJOSER_GEEKPLANNER = {
+    'protocol': 'http',
+    'domain_address': 'localhost:8080',
+    'domain_name': 'geekplanner.com',
+}
+
+# ============================================================================
+# djangorestframework_simplejwt settings
+# ============================================================================
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(hours=24),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=30),
+    'SIGNING_KEY': SECRET_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+# ============================================================================
+# django-cors-headers settings
+# ============================================================================
+# If True, the whitelist will not be used and all origins will be accepted.
+CORS_ORIGIN_ALLOW_ALL = True
+# If True, cookies will be allowed to be included in cross-site HTTP requests.
+CORS_ALLOW_CREDENTIALS = False
+
+# CORS_ORIGIN_WHITELIST = [
+#     'http://localhost:8080',  # Frontend application (Vue.js)
+#     'http://10.0.2.15:8080',
+# ]
+#
+# CORS_ALLOW_HEADERS = list(default_headers) + [
+#     'Authorization',
+# ]

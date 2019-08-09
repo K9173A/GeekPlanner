@@ -1,0 +1,28 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: "Source Sans Pro",Helvetica,sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+}
+
+.layout-wrapper {
+  flex: 1;
+}
+
+@import "blocks/button.css";
+@import "blocks/form.css";
+@import "blocks/project.css";
+@import "blocks/hr";
+@import "blocks/board.css";
+@import "blocks/card.css";
