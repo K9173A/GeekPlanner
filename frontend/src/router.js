@@ -1,8 +1,10 @@
 import Vue from 'vue';
+
 import Router from 'vue-router';
-import token from '@/common/token';
-import api from '@/common/api';
-import auth from '@/storage/modules/auth';
+
+import token from './common/token';
+import auth from './storage/modules/auth';
+
 
 Vue.use(Router);
 
@@ -40,6 +42,11 @@ const router = new Router({
       name: 'login',
       component: () => import('./views/Login.vue'),
     },
+    {
+      path: '/project/create',
+      name: 'create_project',
+      component: () => import('./views/CreateProject.vue'),
+    },
   ],
 });
 
@@ -53,16 +60,16 @@ router.beforeEach((to, from, next) => {
       next('/login');
     } else {
       // Does user have a valid access token?
-      api.verifyToken(token.accessTokenKey)
+      Vue.axios.post('auth/jwt/verify/', token.accessTokenKey)
         // User has a valid access token
         .then(() => next())
         // User has expired access token
         .catch(() => {
           // Does user have a valid refresh token?
-          api.verifyToken(token.refreshTokenKey)
+          Vue.axios.post('auth/jwt/verify/', token.refreshTokenKey)
             // User has a valid refresh token, use it to renew access token
             .then(() => {
-              api.renewToken(token.refreshTokenKey)
+              Vue.axios.post('auth/jwt/refresh/', token.refreshTokenKey)
                 // Saves renewed tokens
                 .then((data) => {
                   token.save(token.accessTokenKey, data.access);

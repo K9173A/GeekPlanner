@@ -1,29 +1,29 @@
 <template>
 <div class="my-2 d-flex align-content-stretch gp-projects__main-item rounded-top">
   <div class="gp-projects__main-thumbnail">
-    <img class="gp-projects__main-img" src="{{ project.thumbnail_url }}" alt="ProjectThumbnail">
+    <img class="gp-projects__main-img" :src="project.thumbnail_url" alt="ProjectThumbnail">
     <div class="gp-projects__main-owner text-align-center">
       <div>
         {{ project.date_created }}
       </div>
       <div v-if="project.owner">
         {{ project.owner.first_name }}{{ project.owner.last_name }}
-        {% else %}
-          Unknown creator
-        {% endif %}
+      </div>
+      <div v-else>
+        Unknown creator
       </div>
     </div>
   </div>
   <div class="gp-projects__main-summary">
     <div class="d-flex justify-content-between">
-      <a class="font-weight-bold" href="{% url 'planner:project_details' project.pk %}">
+      <button class="font-weight-bold" href="#">
         {{ project.title }}
-      </a>
+      </button>
       <div class="btn-group" role="group">
-        <a class="btn btn-outline-primary" href="{% url 'planner:delete_project' project.pk %}">
+        <button @click="deleteProject(project.pk)" class="btn btn-outline-primary">
           <i class="fa fa-trash" aria-hidden="true"></i>
-        </a>
-        <a class="btn btn-outline-primary" href="{% url 'planner:update_project' project.pk %}">
+        </button>
+        <a class="btn btn-outline-primary" href="#">
           <i class="fa fa-cogs" aria-hidden="true"></i>
         </a>
       </div>
@@ -48,11 +48,37 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import bootbox from 'bootbox';
+
 export default {
   name: 'Project',
-  props: [
-    'project'
-  ],
+
+  props: ['project'],
+
+  methods: {
+    ...mapGetters(['deleteProject']),
+    deleteProject(projectId) {
+      bootbox.confirm({
+        message: `Do you really want to delete ${this.project.title}?`,
+        buttons: {
+          confirm: {
+            label: 'Confirm',
+            className: 'btn-danger',
+          },
+          cancel: {
+            label: 'Cancel',
+            className: 'btn-success',
+          },
+        },
+        callback: (result) => {
+          if (result) {
+            this.deleteProject({ project_pk: projectId });
+          }
+        },
+      });
+    },
+  },
 };
 </script>
 

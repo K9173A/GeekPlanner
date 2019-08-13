@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import auth from '@/storage/modules/auth';
+import errorHandler from '@/storage/modules/errorHandler';
 // import projects from '@/storage/modules/projects';
 
 Vue.use(Vuex);
@@ -9,6 +10,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   modules: {
     auth,
+    errorHandler,
     // projects,
   },
 });

@@ -1,59 +1,15 @@
 <template>
 <div class="container">
   <div class="row justify-content-md-center">
-    <div class="card my-4 gp-form">
-      <div class="card-header text-center text-uppercase font-weight-bold">
-        Sign up
+    <ErrorStack v-if="errors" />
+    <div class="card gp-form my-4">
+      <div class="card-header text-center text-uppercase font-weigt-bold">
+        Registration
       </div>
       <div class="card-body">
         <form v-on:submit.prevent="submit" method="post">
-          <div class="form-group">
-            <label class="control-label small">
-              Username
-            </label>
-            <input v-model="username" type="text"
-                   class="form-control" placeholder="Username" required>
-          </div>
-          <div class="form-group">
-            <label class="control-label small">
-              First name
-            </label>
-            <input v-model="firstName" type="text"
-                   class="form-control" placeholder="First name" required>
-          </div>
-          <div class="form-group">
-            <label class="control-label small">
-              Last name
-            </label>
-            <input v-model="lastName" type="text"
-                   class="form-control" placeholder="Last name" required>
-          </div>
-          <div class="form-group">
-            <label class="control-label small">
-              Email
-            </label>
-            <input v-model="email" type="text"
-                   class="form-control" placeholder="Email" required>
-          </div>
-          <div class="form-group">
-            <label class="control-label small">
-              Password
-            </label>
-            <input v-model="password" type="password"
-                   class="form-control" placeholder="Password" required>
-          </div>
-          <div class="form-group">
-            <label class="control-label small">
-              Repeat password
-            </label>
-            <input v-model="password2" type="password"
-                   class="form-control" placeholder="Password" required>
-          </div>
-          <div v-if="errors" class="mt-2">
-            <div v-for="error in errors" class="gp-form__error">
-              {{ error }}
-            </div>
-          </div>
+          <vue-form-generator :schema="schema" :model="model" :options="formOptions">
+          </vue-form-generator>
           <input class="btn btn-primary col-12" type="submit" value="Submit">
         </form>
       </div>
@@ -63,59 +19,109 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
+import ErrorStack from '@/components/ErrorStack.vue';
 
 export default {
   name: 'Register',
 
+  components: { ErrorStack },
+
   data() {
     return {
-      username: '',
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      password2: '',
+      model: {
+        username: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        password2: '',
+      },
+      schema: {
+        groups: [
+          {
+            fields: [
+              {
+                type: 'input',
+                inputType: 'text',
+                label: 'Username',
+                model: 'username',
+                placeholder: 'John123',
+                required: true,
+                min: 3,
+                hint: 'Min 3 characters',
+              },
+              {
+                type: 'input',
+                inputType: 'text',
+                label: 'First name',
+                model: 'firstName',
+                placeholder: 'John',
+                required: true,
+                min: 2,
+                hint: 'Min 2 characters',
+              },
+              {
+                type: 'input',
+                inputType: 'text',
+                label: 'Last name',
+                model: 'lastName',
+                placeholder: 'Doe',
+                required: true,
+                min: 2,
+                hint: 'Min 2 characters',
+              },
+              {
+                type: 'input',
+                inputType: 'email',
+                label: 'E-mail',
+                model: 'email',
+                placeholder: 'johndoe@mail.com',
+                required: true,
+              },
+              {
+                type: 'input',
+                inputType: 'password',
+                label: 'Password',
+                model: 'password',
+                required: true,
+                min: 8,
+                hint: 'Min 8 characters',
+              },
+              {
+                type: 'input',
+                inputType: 'password',
+                label: 'Repeat Password',
+                model: 'password2',
+                required: true,
+                validator: 'passwordComparisonValidator',
+              },
+            ],
+          },
+        ],
+      },
+      formOptions: {
+        validateAfterLoad: true,
+        validateAfterChanged: true,
+        validateAsync: true,
+      },
     };
   },
 
   computed: {
-    ...mapState({
-      errors: state => state.auth.errors,
-    }),
+    ...mapState({ errors: state => state.auth.errors }),
   },
 
   methods: {
-    /*
-    validateForm() {
-      if (!/[a-zA-Z0-9]{3,}/i.test(this.username)) {
-        this.setError('username', 'Username should contain at least 3 characters.');
-        return false;
-      }
-      if (!/\S+@\S+\.\S+/i.test(this.email)) {
-        this.setError('email', 'Incorrect email address.');
-        return false;
-      }
-      if (this.password !== this.password2) {
-        this.setError('password2', 'Passwords should be the same.');
-        return false;
-      }
-      return true;
-    },
-    */
+    ...mapActions(['register']),
     submit() {
-      this.$store
-        .dispatch('register', {
-          username: this.username,
-          firstName: this.firstName,
-          lastName: this.lastName,
-          email: this.email,
-          password: this.password,
-          password2: this.password2,
-        })
-        .then(
-          () => this.$router.push({ name: 'home' }),
-        );
+      this.register({
+        username: this.username,
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
+        password: this.password,
+      });
     },
   },
 };

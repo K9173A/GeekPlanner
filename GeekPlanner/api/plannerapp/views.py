@@ -17,6 +17,7 @@ from .models import (
     Card,
     Category,
 )
+from .pagination import ProjectLimitOffsetPagination
 
 
 def get_default_categories():
@@ -38,6 +39,7 @@ class ProjectListAPIView(generics.ListAPIView):
     queryset = Project.objects.filter(is_active=True).order_by('date_created')
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = ProjectLimitOffsetPagination
 
     def get_serializer_context(self):
         """

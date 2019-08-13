@@ -23,25 +23,15 @@ urlpatterns = [
     #     'api/admin/',
     #     include('api.adminapp.urls', namespace='admin')
     # ),
-    # path(
-    #     'api/auth/',
-    #     include('api.authapp.urls', namespace='auth')
-    # ),
-    # path(
-    #     'api/workspace/',
-    #     include('api.plannerapp.urls', namespace='planner')
-    # ),
+    path(
+        'api/workspace/',
+        include('api.plannerapp.urls', namespace='planner')
+    ),
     # ========================================================================
     # djoser authentication backends
     # ========================================================================
-    path(
-        'api/auth/',
-        include('djoser.urls')
-    ),
-    path(
-        'api/auth/',
-        include('djoser.urls.jwt')
-    ),
+    path('api/auth/', include('djoser.urls')),
+    path('api/auth/', include('djoser.urls.jwt')),
 ]
 
 if settings.DEBUG:
