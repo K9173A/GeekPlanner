@@ -44,43 +44,34 @@ const router = new Router({
     },
     {
       path: '/project/create',
-      name: 'create_project',
+      name: 'createProject',
       component: () => import('./views/CreateProject.vue'),
     },
   ],
 });
 
-// Redirects user if he tries to access URLs which requires login and token
 router.beforeEach((to, from, next) => {
-  // Does the next URL require authentication
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    // Does user have access token?
-    if (token.get(token.accessTokenKey) === null) {
-      // Redirects user to the login form to acquire new token
-      next('/login');
+    const accessToken = token.get(token.accessTokenKey);
+    const refreshToken = token.get(token.refreshTokenKey);
+    if (accessToken === null) {
+      next('/register');
     } else {
-      // Does user have a valid access token?
-      Vue.axios.post('auth/jwt/verify/', token.accessTokenKey)
-        // User has a valid access token
+      Vue.axios
+        .post('auth/jwt/verify/', { token: accessToken })
         .then(() => next())
-        // User has expired access token
         .catch(() => {
-          // Does user have a valid refresh token?
-          Vue.axios.post('auth/jwt/verify/', token.refreshTokenKey)
-            // User has a valid refresh token, use it to renew access token
+          Vue.axios
+            .post('auth/jwt/verify/', { token: refreshToken })
             .then(() => {
-              Vue.axios.post('auth/jwt/refresh/', token.refreshTokenKey)
-                // Saves renewed tokens
+              Vue.axios
+                .post('auth/jwt/refresh/', { refresh: refreshToken })
                 .then((data) => {
-                  token.save(token.accessTokenKey, data.access);
-                  token.save(token.refreshTokenKey, data.refresh);
-                  auth.state.isAuthenticated = true;
+                  auth.mutations.setUserAuthentication(data);
                   next();
                 })
-                // Can't refresh tokens, redirects to the registration form
                 .catch(() => next('/register'));
             })
-            // User has expired refresh token
             .catch(() => next('/login'));
         });
     }

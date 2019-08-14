@@ -24,4 +24,10 @@ export default {
   save(tokenKey, newToken) {
     localStorage.setItem(tokenKey, newToken);
   },
+
+  addAuthHeader(data) {
+    const newData = data;
+    newData.headers.Authorization = `Bearer ${this.get(this.accessTokenKey)}`;
+    return newData;
+  },
 };

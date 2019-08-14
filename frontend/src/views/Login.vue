@@ -1,6 +1,6 @@
 <template>
 <div class="container">
-  <div class="row">
+  <div class="row justify-content-center">
     <div class="col-6">
       <ErrorStack/>
       <div class="card my-4 gp-form">
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapMutations } from 'vuex';
 import ErrorStack from '@/components/ErrorStack.vue';
 
 export default {
@@ -70,11 +70,19 @@ export default {
 
   methods: {
     ...mapActions(['login']),
+    ...mapMutations(['setUserAuthentication', 'setError']),
+    // Logs use in by sending his credentials to the Django REST backend.
     submit() {
-      this.login({
-        username: this.username,
-        password: this.password,
-      });
+      this.axios
+        .post('auth/jwt/create/', {
+          username: this.model.username,
+          password: this.model.password,
+        })
+        .then((response) => {
+          this.setUserAuthentication(response);
+          this.$router.push({ name: 'home' });
+        })
+        .catch(error => this.setError(error));
     },
   },
 };

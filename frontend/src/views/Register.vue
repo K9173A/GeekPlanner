@@ -1,17 +1,19 @@
 <template>
 <div class="container">
-  <div class="row justify-content-md-center">
-    <ErrorStack v-if="errors" />
-    <div class="card gp-form my-4">
-      <div class="card-header text-center text-uppercase font-weigt-bold">
-        Registration
-      </div>
-      <div class="card-body">
-        <form v-on:submit.prevent="submit" method="post">
-          <vue-form-generator :schema="schema" :model="model" :options="formOptions">
-          </vue-form-generator>
-          <input class="btn btn-primary col-12" type="submit" value="Submit">
-        </form>
+  <div class="row justify-content-center">
+    <div class="col-6">
+      <ErrorStack/>
+      <div class="card gp-form my-4">
+        <div class="card-header text-center text-uppercase font-weigt-bold">
+          Registration
+        </div>
+        <div class="card-body">
+          <form v-on:submit.prevent="submit" method="post">
+            <vue-form-generator :schema="schema" :model="model" :options="formOptions">
+            </vue-form-generator>
+            <input class="btn btn-primary col-12" type="submit" value="Submit">
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -19,7 +21,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapMutations } from 'vuex';
 import ErrorStack from '@/components/ErrorStack.vue';
 
 export default {
@@ -108,20 +110,20 @@ export default {
     };
   },
 
-  computed: {
-    ...mapState({ errors: state => state.auth.errors }),
-  },
-
   methods: {
-    ...mapActions(['register']),
+    ...mapMutations(['setError']),
+    // Registers user by sending his credentials to the Django REST backend.
     submit() {
-      this.register({
-        username: this.username,
-        firstName: this.firstName,
-        lastName: this.lastName,
-        email: this.email,
-        password: this.password,
-      });
+      this.axios
+        .post('auth/users/', {
+          username: this.username,
+          firstName: this.firstName,
+          lastName: this.lastName,
+          email: this.email,
+          password: this.password,
+        })
+        .then(() => this.$router.push({ name: 'home' }))
+        .catch(error => this.setError(error));
     },
   },
 };

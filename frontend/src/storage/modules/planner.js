@@ -1,5 +1,6 @@
 import Vue from 'vue';
 
+import parsePaginationURL from '@/common/utils';
 import token from '@/common/token';
 
 
@@ -10,10 +11,10 @@ const actions = {
    * paginator data.
    * @param context - Vuex context object.
    * @param paginatorData - data needed for ProjectLimitOffPagination (limit & offset).
-   * @returns {Promise<unknown>}
    */
   fetchProjects(context, paginatorData) {
-    Vue.axios.get('projects', addAuthHeader(paginatorData))
+    Vue.axios
+      .get('projects', token.addAuthHeader(paginatorData))
       .then(response => context.commit('setProjects', response.projects))
       .catch(error => context.commit('setError', error));
   },
@@ -23,9 +24,10 @@ const actions = {
    * @param projectData - project data specified by user.
    */
   createProject(context, projectData) {
-    Vue.axios.post('create_project/', addAuthHeader(projectData))
+    Vue.axios
+      .post('create_project/', token.addAuthHeader(projectData))
       .then(() => this.$router.push({ name: 'projects' }))
-      .catch(error => context.commit('setError', error))
+      .catch(error => context.commit('setError', error));
   },
   /**
    * Deletes selected project. Shows modal window (bootbox) for user confirmation.
@@ -33,7 +35,8 @@ const actions = {
    * @param projectId - selected project Id.
    */
   deleteProject(context, projectId) {
-    Vue.axios.delete('delete_project/', addAuthHeader(projectId))
+    Vue.axios
+      .delete('delete_project/', token.addAuthHeader(projectId))
       .then(response => context.commit('setProjects', response.projects))
       .catch(error => context.commit('setError', error));
   },
@@ -43,12 +46,11 @@ const actions = {
   //     this.addAuthHeader({'project_pk': projectId, 'card_pk': cardId})
   //   ).catch(error => context.commit('setError', error));
   // },
-
 };
 
 const mutations = {
   setProjects(state, projects) {
-    state.projects = projects
+    state.projects = projects;
   },
   setPreviousPage(state, pageURL) {
     state.previousPage = parsePaginationURL(pageURL);
@@ -62,11 +64,12 @@ const state = {
   nextPage: { limit: null, offset: null },
   previousPage: { limit: null, offset: null },
   projects: [],
-  errors: null,
 };
 
 const getters = {
-  projectsCount: () => state.projects.length,
+  projectsCount() {
+    return state.projects.length;
+  },
 };
 
 export default {
@@ -75,18 +78,3 @@ export default {
   state,
   getters,
 };
-
-function parsePaginationURL(url) {
-  let searchParams = new URLSearchParams(url);
-  return {
-    limit: searchParams.get('limit'),
-    offset: searchParams.get('offset'),
-  };
-}
-
-function addAuthHeader(data) {
-  let newData = data;
-  const accessToken = token.get(token.accessTokenKey);
-  newData.headers.Authorization = `Bearer ${accessToken}`;
-  return newData;
-}

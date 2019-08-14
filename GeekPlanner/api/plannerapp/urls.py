@@ -14,11 +14,11 @@ urlpatterns = [
         planner_api.ProjectListAPIView.as_view(),
         name='projects'
     ),
-    # path(
-    #     'create_project/',
-    #     planner_api.ProjectCreateView.as_view(),
-    #     name='create_project'
-    # ),
+    path(
+        'create_project/',
+        planner_api.ProjectCreateView.as_view(),
+        name='create_project'
+    ),
     # path(
     #     'update_project/<int:pk>/',
     #     planner_api.ProjectUpdateView.as_view(),

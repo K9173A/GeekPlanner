@@ -14,7 +14,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     """Serializer of Project model."""
     class Meta:
         model = Project
-        fields = ('title', 'description', 'thumbnail',)
+        fields = ('title', 'description', 'thumbnail', 'is_public')
 
 
 class CategorySerializer(serializers.ModelSerializer):

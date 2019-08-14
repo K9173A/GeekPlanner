@@ -1,7 +1,7 @@
 <template>
 <div class="my-4 gp-error-stack">
-  <div v-if="errors" class="d-flex flex-direction-column">
-    <div v-for="error in errors" :key="error" class="gp-error">
+  <div v-if="errors" class="row">
+    <div v-for="error in errors" :key="error" class="col-12 gp-error">
       {{ error }}
     </div>
   </div>

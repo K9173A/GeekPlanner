@@ -9,9 +9,14 @@ const mutations = {
   setError(state, error) {
     state.errors = [];
     if (error.response) {
-      Object.entries(error.response.data).forEach((fieldName, messages) => {
-        for (let i = 0; i < messages.length; i += 1) {
-          state.errors.push(`${fieldName}: ${messages[i]}`);
+      Object.entries(error.response.data).forEach((data) => {
+        const [title, messages] = data;
+        if (messages instanceof Array) {
+          for (let i = 0; i < messages.length; i += 1) {
+            state.errors.push(`${title}: ${messages[i]}`);
+          }
+        } else {
+          state.errors.push(`${title}: ${messages}`);
         }
       });
     } else if (error.request) {

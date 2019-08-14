@@ -1,18 +1,25 @@
 <template>
 <div class="container">
-  <div class="row">
+  <div class="row justify-content-center">
     <div class="col-6">
       <ErrorStack/>
-      <form v-on:submit.prevent="submit" method="post" enctype="multipart/form-data">
-        <vue-form-generator :schema="schema" :model="model" :options="formOptions">
-          <div class="d-flex justify-content-around px-4 py-4">
-            <input class="btn btn-primary" type="submit" value="Create">
-            <router-link :to="{ name: 'Projects' }" class="btn btn-primary">
-              Cancel
-            </router-link>
-          </div>
-        </vue-form-generator>
-      </form>
+      <div class="card gp-form my-4">
+        <div class="card-header text-center text-uppercase font-weigt-bold">
+          New Project
+        </div>
+        <div class="card-body">
+          <form v-on:submit.prevent="submit" method="post" enctype="multipart/form-data">
+            <vue-form-generator :schema="schema" :model="model" :options="formOptions">
+            </vue-form-generator>
+            <div class="d-flex justify-content-around px-4 py-4">
+              <input class="btn btn-primary" type="submit" value="Create">
+              <router-link :to="{ name: 'projects' }" class="btn btn-primary">
+                Cancel
+              </router-link>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -20,9 +27,12 @@
 
 <script>
 import { mapActions } from 'vuex';
+import ErrorStack from '@/components/ErrorStack.vue';
 
 export default {
   name: 'CreateProject',
+
+  components: { ErrorStack },
 
   data() {
     return {
@@ -35,7 +45,6 @@ export default {
       schema: {
         groups: [
           {
-            legend: 'New Project',
             fields: [
               {
                 type: 'input',
@@ -57,12 +66,10 @@ export default {
                 max: 256,
               },
               {
-                type: 'image',
+                type: 'upload',
                 label: 'Thumbnail',
                 model: 'thumbnail',
                 featured: true,
-                browse: true,
-                preview: true,
               },
               {
                 type: 'switch',
@@ -90,7 +97,7 @@ export default {
         title: this.title,
         description: this.description,
         thumbnail: this.thumbnail,
-        isPublic: this.isPublic,
+        is_public: this.isPublic,
       });
     },
   },

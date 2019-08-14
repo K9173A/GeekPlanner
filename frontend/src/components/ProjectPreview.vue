@@ -1,46 +1,23 @@
 <template>
-<div class="my-2 d-flex align-content-stretch gp-projects__main-item rounded-top">
-  <div class="gp-projects__main-thumbnail">
-    <img class="gp-projects__main-img" :src="project.thumbnail_url" alt="ProjectThumbnail">
-    <div class="gp-projects__main-owner text-align-center">
-      <div>
-        {{ project.date_created }}
-      </div>
-      <div v-if="project.owner">
-        {{ project.owner.first_name }}{{ project.owner.last_name }}
-      </div>
-      <div v-else>
-        Unknown creator
-      </div>
+<div class="card">
+  <div class="row no-gutters">
+    <div class="col">
+      <img class="gp-projects__main-img" :src="project.thumbnail_url" alt="ProjectThumbnail">
     </div>
-  </div>
-  <div class="gp-projects__main-summary">
-    <div class="d-flex justify-content-between">
-      <button class="font-weight-bold" href="#">
-        {{ project.title }}
-      </button>
-      <div class="btn-group" role="group">
-        <button @click="deleteProject(project.pk)" class="btn btn-outline-primary">
-          <i class="fa fa-trash" aria-hidden="true"></i>
+    <div class="col-8">
+      <div class="card-header">
+        <button class="font-weight-bold" href="#">
+          {{ project.title }}
         </button>
-        <a class="btn btn-outline-primary" href="#">
-          <i class="fa fa-cogs" aria-hidden="true"></i>
-        </a>
       </div>
-    </div>
-    <hr class="gp-hr">
-    <div class="gp-projects__main-description">
-      {{ project.description }}
-    </div>
-    <hr class="gp-hr">
-    <div class="container">
-      <div class="row">
-        <div class="col-8 gp-projects__main-tags">
-          <a class="btn tag" href="#">Python</a>
-          <a class="btn tag" href="#">VueJS</a>
-          <a class="btn tag" href="#">Django</a>
-          <a class="btn tag" href="#">Linux</a>
-        </div>
+      <div class="card-body">
+        {{ project.description }}
+      </div>
+      <div class="card-footer">
+        <a class="btn tag" href="#">Python</a>
+        <a class="btn tag" href="#">VueJS</a>
+        <a class="btn tag" href="#">Django</a>
+        <a class="btn tag" href="#">Linux</a>
       </div>
     </div>
   </div>

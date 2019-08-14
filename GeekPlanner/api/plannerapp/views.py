@@ -51,6 +51,14 @@ class ProjectListAPIView(generics.ListAPIView):
         return context
 
 
+class ProjectCreateAPIView(generics.CreateAPIView):
+    serializer_class = ProjectSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        pass
+
+
 class ProjectRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     """
     View which controls a single instance of Project and allows to

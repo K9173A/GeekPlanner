@@ -18,16 +18,26 @@
 </template>
 
 <script>
+import { mapActions, mapMutations } from 'vuex';
+
 export default {
   name: 'Activate',
 
   props: ['uid', 'token'],
 
   mounted() {
-    this.$store.dispatch('activate', {
-      uid: this.$props.uid,
-      token: this.$props.token,
-    });
+    // Sends POST request to the backend to complete user account activation.
+    this.axios
+      .post('auth/users/activation/', {
+        uid: this.$props.uid,
+        token: this.$props.token,
+      })
+      .catch(error => this.setError(error));
+  },
+
+  methods: {
+    ...mapActions(['activate']),
+    ...mapMutations(['setError']),
   },
 };
 </script>
