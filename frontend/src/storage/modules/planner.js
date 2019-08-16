@@ -1,8 +1,22 @@
 import Vue from 'vue';
 
-import parsePaginationURL from '@/common/utils';
+import urlParser from '@/common/urlParser';
 import token from '@/common/token';
 
+const state = {
+  pagination: {
+    prevPageNumber: null,
+    nextPageNumber: null,
+    currPageNumber: 1,
+    count: 0,
+  },
+  project: {
+    information: null,
+    categories: null,
+    cards: null,
+  },
+  projects: [],
+};
 
 const actions = {
   /**
@@ -10,34 +24,62 @@ const actions = {
    * Django REST backend (plannerapp.pagination) and shows them as a list with
    * paginator data.
    * @param context - Vuex context object.
-   * @param paginatorData - data needed for ProjectLimitOffPagination (limit & offset).
+   * @param pageNumber - page number where user will be redirected to.
    */
-  fetchProjects(context, paginatorData) {
+  fetchProjects(context, pageNumber = 1) {
+    // console.log(pageNumber);
     Vue.axios
-      .get('projects', token.addAuthHeader(paginatorData))
-      .then(response => context.commit('setProjects', response.projects))
-      .catch(error => context.commit('setError', error));
-  },
-  /**
-   * Creates a new project with data specified by user in the form.
-   * @param context - Vuex context object.
-   * @param projectData - project data specified by user.
-   */
-  createProject(context, projectData) {
-    Vue.axios
-      .post('create_project/', token.addAuthHeader(projectData))
-      .then(() => this.$router.push({ name: 'projects' }))
+      .get(`planner/projects?page=${pageNumber}`, token.getAuthHeaders())
+      .then((response) => {
+        const previousPageURL = response.data.previous;
+        const nextPageURL = response.data.next;
+        let currentPageNumber = 0;
+
+        if (previousPageURL) {
+          const p = parseInt(urlParser.parsePageNumberPagination(previousPageURL), 10);
+          context.commit('setPageNumber', { pagePosition: 'previous', pageNumber: p });
+        }
+
+        if (nextPageURL) {
+          const p = parseInt(urlParser.parsePageNumberPagination(nextPageURL), 10);
+          context.commit('setPageNumber', { pagePosition: 'next', pageNumber: p });
+        }
+
+        if (state.pagination.prevPageNumber && state.pagination.nextPageNumber) {
+          currentPageNumber = Math.trunc((response.data.next + response.data.previous) / 2);
+        } else if (state.pagination.prevPageNumber && !state.pagination.nextPageNumber) {
+          currentPageNumber = state.pagination.prevPageNumber + 1;
+        } else if (!state.pagination.prevPageNumber && state.pagination.nextPageNumber) {
+          currentPageNumber = 1;
+        } else {
+          currentPageNumber = -1;
+        }
+
+        context.commit(
+          'setPageNumber', { pagePosition: 'current', pageNumber: currentPageNumber },
+        );
+        context.commit('setProjects', response.data.results);
+        context.commit('setCount', response.data.count);
+        context.commit('setTotalPages', response.data.total_pages);
+      })
       .catch(error => context.commit('setError', error));
   },
   /**
    * Deletes selected project. Shows modal window (bootbox) for user confirmation.
    * @param context - Vuex context object.
-   * @param projectId - selected project Id.
+   * @param id - selected project Id.
    */
-  deleteProject(context, projectId) {
+  deleteProject(context, id) {
     Vue.axios
-      .delete('delete_project/', token.addAuthHeader(projectId))
+      .delete(`planner/delete_project/${id}`, token.getAuthHeaders())
       .then(response => context.commit('setProjects', response.projects))
+      .catch(error => context.commit('setError', error));
+  },
+
+  loadProject(context, id) {
+    Vue.axios
+      .get(`planner/project_details/${id}`, token.getAuthHeaders())
+      .then(response => context.commit('setProjectData', response.data))
       .catch(error => context.commit('setError', error));
   },
 
@@ -52,25 +94,36 @@ const mutations = {
   setProjects(state, projects) {
     state.projects = projects;
   },
-  setPreviousPage(state, pageURL) {
-    state.previousPage = parsePaginationURL(pageURL);
+  setPageNumber(state, { pagePosition, pageNumber }) {
+    switch (pagePosition) {
+      case 'previous':
+        state.pagination.prevPageNumber = pageNumber;
+        break;
+      case 'current':
+        state.pagination.currPageNumber = pageNumber;
+        break;
+      case 'next':
+        state.pagination.nextPageNumber = pageNumber;
+        break;
+      default:
+        throw Error(`Undefined pagePosition value: ${pagePosition}`);
+    }
   },
-  setNextPage(state, pageURL) {
-    state.nextPage = parsePaginationURL(pageURL);
+  setCount(state, count) {
+    state.pagination.count = count;
+  },
+  setTotalPages(state, totalPages) {
+    state.pagination.totalPages = totalPages;
+  },
+  setProject(state, project) {
+    state.pagination.project = project;
+  },
+  setProjectData(state, projectData) {
+    state.project = projectData;
   },
 };
 
-const state = {
-  nextPage: { limit: null, offset: null },
-  previousPage: { limit: null, offset: null },
-  projects: [],
-};
-
-const getters = {
-  projectsCount() {
-    return state.projects.length;
-  },
-};
+const getters = {};
 
 export default {
   actions,

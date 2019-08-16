@@ -9,6 +9,14 @@ const mutations = {
   setError(state, error) {
     state.errors = [];
     if (error.response) {
+      if (error.response.status === 500) {
+        state.errors.push('500 Internal server error.');
+        return;
+      }
+      if (error.response.status === 404) {
+        state.errors.push('404 Not found.');
+        return;
+      }
       Object.entries(error.response.data).forEach((data) => {
         const [title, messages] = data;
         if (messages instanceof Array) {

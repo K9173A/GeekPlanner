@@ -27,15 +27,6 @@ Vue.use(VueFormGenerator, {
 });
 
 Vue.axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
-// Vue.axios.interceptors.response.use(
-//   response => response,
-//   error => {
-//     if (error.response && (error.response.status === 401)) {
-//
-//     }
-//     return Promise.reject(error.response);
-//   }
-// );
 Vue.config.productionTip = false;
 
 

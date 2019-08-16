@@ -26,7 +26,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapMutations } from 'vuex';
+import token from '@/common/token';
 import ErrorStack from '@/components/ErrorStack.vue';
 
 export default {
@@ -39,7 +40,7 @@ export default {
       model: {
         title: '',
         description: '',
-        thumbnail: '',
+        thumbnail: null,
         isPublic: true,
       },
       schema: {
@@ -61,7 +62,6 @@ export default {
                 label: 'Description',
                 model: 'description',
                 placeholder: 'This is my favourite project!',
-                featured: true,
                 hint: 'Max 256 characters',
                 max: 256,
               },
@@ -69,7 +69,6 @@ export default {
                 type: 'upload',
                 label: 'Thumbnail',
                 model: 'thumbnail',
-                featured: true,
               },
               {
                 type: 'switch',
@@ -91,14 +90,17 @@ export default {
   },
 
   methods: {
-    ...mapActions(['createProject']),
+    ...mapMutations(['setError']),
     submit() {
-      this.createProject({
-        title: this.title,
-        description: this.description,
-        thumbnail: this.thumbnail,
-        is_public: this.isPublic,
-      });
+      this.axios
+        .post('planner/create_project/', {
+          title: this.model.title,
+          description: this.model.description,
+          thumbnail: this.model.thumbnail,
+          is_public: this.model.isPublic,
+        }, token.getAuthHeaders())
+        .then(() => this.$router.push({ name: 'projects' }))
+        .catch(error => this.setError(error));
     },
   },
 };

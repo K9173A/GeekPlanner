@@ -1,6 +1,7 @@
 export default {
   accessTokenKey: 'jwtAccessToken',
   refreshTokenKey: 'jwtRefreshToken',
+
   /**
    * Gets current token from the web storage.
    * @param tokenKey - token name.
@@ -25,9 +26,20 @@ export default {
     localStorage.setItem(tokenKey, newToken);
   },
 
-  addAuthHeader(data) {
+  appendAuthHeaders(data) {
     const newData = data;
+    if (!newData.headers) {
+      newData.headers = {};
+    }
     newData.headers.Authorization = `Bearer ${this.get(this.accessTokenKey)}`;
     return newData;
+  },
+
+  getAuthHeaders() {
+    return {
+      headers: {
+        Authorization: `Bearer ${this.get(this.accessTokenKey)}`,
+      },
+    };
   },
 };

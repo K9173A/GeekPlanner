@@ -4,7 +4,7 @@ Module for plannerapp views.
 from django.db.models import Q
 
 from rest_framework import generics, status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from .serializers import (
@@ -17,7 +17,7 @@ from .models import (
     Card,
     Category,
 )
-from .pagination import ProjectLimitOffsetPagination
+from .pagination import ProjectPageNumberPagination
 
 
 def get_default_categories():
@@ -39,7 +39,7 @@ class ProjectListAPIView(generics.ListAPIView):
     queryset = Project.objects.filter(is_active=True).order_by('date_created')
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated]
-    pagination_class = ProjectLimitOffsetPagination
+    pagination_class = ProjectPageNumberPagination
 
     def get_serializer_context(self):
         """
@@ -56,7 +56,8 @@ class ProjectCreateAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        pass
+        request.data['owner'] = request.user.id
+        return super(ProjectCreateAPIView, self).create(request, *args, **kwargs)
 
 
 class ProjectRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -68,7 +69,7 @@ class ProjectRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
     queryset = Project.objects.filter(is_active=True).order_by('date_created')
     serializer_class = ProjectSerializer
     lookup_field = 'pk'
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
         """
@@ -79,9 +80,8 @@ class ProjectRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
         :return: Response with dict of cards and categories.
         """
         project = self.get_object()
-        project_serializer = ProjectSerializer(project)
+        categories = get_default_categories()
 
-        categories = self.get_project_categories(project.pk)
         categories_cards = {}
         for category in categories:
             cards = Card.objects.filter(
@@ -89,13 +89,12 @@ class ProjectRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
                 Q(is_active=True) &
                 Q(category=category)
             )
-            serialized_category = CategorySerializer(category)
-            serialized_cards = CardSerializer(cards, many=True)
-            categories_cards[serialized_category.data] = serialized_cards.data
+            categories_cards[category.name] = CardSerializer(cards, many=True).data
 
-        return Response(data={
-            'project': project_serializer.data,
-            'categories_cards': categories_cards
+        return Response({
+            'information': ProjectSerializer(project).data,
+            'categories': CategorySerializer(categories, many=True).data,
+            'cards': categories_cards
         })
 
     def delete(self, request, *args, **kwargs):
@@ -110,13 +109,6 @@ class ProjectRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
         project.is_active = False
         project.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def get_project_categories(self, project_pk):
-        # TODO
-        return [
-            *get_default_categories(),
-            # Category.objects.filter(projects=project_pk),
-        ]
 
 
 class CardCreateAPIView(generics.CreateAPIView):

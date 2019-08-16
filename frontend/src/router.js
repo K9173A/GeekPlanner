@@ -47,6 +47,12 @@ const router = new Router({
       name: 'createProject',
       component: () => import('./views/CreateProject.vue'),
     },
+    {
+      path: '/project/:id',
+      name: 'projectDetails',
+      props: true,
+      component: () => import('./views/ProjectDetails.vue'),
+    },
   ],
 });
 

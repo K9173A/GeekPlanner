@@ -2,16 +2,25 @@
 <div class="card">
   <div class="row no-gutters">
     <div class="col">
-      <img class="gp-projects__main-img" :src="project.thumbnail_url" alt="ProjectThumbnail">
+      {{ index }}
     </div>
     <div class="col-8">
-      <div class="card-header">
-        <button class="font-weight-bold" href="#">
+      <div class="card-header d-flex justify-content-between">
+        <router-link :to="{ name: 'projectDetails', params: {id: project.id}}"
+                     class="font-weight-bold">
           {{ project.title }}
-        </button>
+        </router-link>
+        <div class="btn-group" role="group">
+          <button @click="edit" class="btn btn-secondary">
+            Edit
+          </button>
+          <button @click="del" class="btn btn-secondary">
+            Delete
+          </button>
+        </div>
       </div>
       <div class="card-body">
-        {{ project.description }}
+        {{ project.description }} ==== {{ project.id }}
       </div>
       <div class="card-footer">
         <a class="btn tag" href="#">Python</a>
@@ -31,11 +40,11 @@ import bootbox from 'bootbox';
 export default {
   name: 'Project',
 
-  props: ['project'],
+  props: ['project', 'index'],
 
   methods: {
     ...mapGetters(['deleteProject']),
-    deleteProject(projectId) {
+    del() {
       bootbox.confirm({
         message: `Do you really want to delete ${this.project.title}?`,
         buttons: {
@@ -50,10 +59,13 @@ export default {
         },
         callback: (result) => {
           if (result) {
-            this.deleteProject({ project_pk: projectId });
+            this.deleteProject(this.project.id);
           }
         },
       });
+    },
+    edit() {
+      console.log(this.project.id);
     },
   },
 };

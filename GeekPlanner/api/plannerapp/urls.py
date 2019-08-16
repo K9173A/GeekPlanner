@@ -16,24 +16,24 @@ urlpatterns = [
     ),
     path(
         'create_project/',
-        planner_api.ProjectCreateView.as_view(),
+        planner_api.ProjectCreateAPIView.as_view(),
         name='create_project'
     ),
-    # path(
-    #     'update_project/<int:pk>/',
-    #     planner_api.ProjectUpdateView.as_view(),
-    #     name='update_project'
-    # ),
-    # path(
-    #     'delete_project/<int:pk>/',
-    #     planner_api.ProjectDeleteView.as_view(),
-    #     name='delete_project'
-    # ),
-    # path(
-    #     'project_details/<int:pk>/',
-    #     planner_api.ProjectDetailView.as_view(),
-    #     name='project_details'
-    # ),
+    path(
+        'update_project/<int:pk>/',
+        planner_api.ProjectRetrieveUpdateDestroyAPIView.as_view(),
+        name='update_project'
+    ),
+    path(
+        'delete_project/<int:pk>/',
+        planner_api.ProjectRetrieveUpdateDestroyAPIView.as_view(),
+        name='delete_project'
+    ),
+    path(
+        'project_details/<int:pk>/',
+        planner_api.ProjectRetrieveUpdateDestroyAPIView.as_view(),
+        name='project_details'
+    ),
     # path(
     #     'create_card/project/<int:project_pk>/category/<int:category_pk>/',
     #     planner_api.CardCreateView.as_view(),

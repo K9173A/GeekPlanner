@@ -24,7 +24,7 @@ urlpatterns = [
     #     include('api.adminapp.urls', namespace='admin')
     # ),
     path(
-        'api/workspace/',
+        'api/planner/',
         include('api.plannerapp.urls', namespace='planner')
     ),
     # ========================================================================
