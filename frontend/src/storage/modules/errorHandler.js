@@ -35,7 +35,9 @@ const mutations = {
   },
 
   clear(state) {
-    state.errors = [];
+    if (state) {
+      state.errors = [];
+    }
   },
 };
 

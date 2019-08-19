@@ -6,27 +6,28 @@ const actions = {
    * @param context - context object.
    */
   logout(context) {
-    context.commit('unsetUserAuthentication');
+    context.commit('clearAuthenticationTokens');
+    context.commit('setAuthenticated', false);
   },
 };
 
 const mutations = {
+  setAuthenticated(state, isAuthenticated) {
+    state.isAuthenticated = isAuthenticated;
+  },
   /**
    * Sets user authentication data including a token.
    * @param state - Vuex state object.
    * @param response - response object.
    */
-  setUserAuthentication(state, response) {
-    state.isAuthenticated = true;
+  setAuthenticationTokens(state, response) {
     token.save(token.accessTokenKey, response.data.access);
     token.save(token.refreshTokenKey, response.data.refresh);
   },
   /**
    * Clears user authentication data.
-   * @param state - Vuex state object.
    */
-  unsetUserAuthentication(state) {
-    state.isAuthenticated = false;
+  clearAuthenticationTokens() {
     token.delete(token.accessTokenKey);
   },
 };

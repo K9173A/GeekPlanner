@@ -1,5 +1,5 @@
 <template>
-<div class="container">
+<div class="container mb-2">
   <div class="row">
     <div class="col-10">
       <ErrorStack/>
@@ -10,7 +10,7 @@
           </div>
         </div>
         <div class="card-body">
-          efefefefefef
+          {{ project.information.description }}
         </div>
       </div>
     </div>
@@ -23,7 +23,7 @@ import { mapState, mapActions } from 'vuex';
 import ErrorStack from '@/components/ErrorStack.vue';
 
 export default {
-  name: 'ProjectDetails',
+  name: 'Project',
 
   components: { ErrorStack },
 

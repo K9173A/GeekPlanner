@@ -70,7 +70,7 @@ export default {
 
   methods: {
     ...mapActions(['login']),
-    ...mapMutations(['setUserAuthentication', 'setError']),
+    ...mapMutations(['setAuthenticationTokens', 'setAuthenticated', 'setError']),
     // Logs use in by sending his credentials to the Django REST backend.
     submit() {
       this.axios
@@ -79,7 +79,8 @@ export default {
           password: this.model.password,
         })
         .then((response) => {
-          this.setUserAuthentication(response);
+          this.setAuthenticationTokens(response);
+          this.setAuthenticated(true);
           this.$router.push({ name: 'home' });
         })
         .catch(error => this.setError(error));

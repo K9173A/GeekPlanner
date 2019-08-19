@@ -6,21 +6,21 @@
     </div>
     <div class="col-8">
       <div class="card-header d-flex justify-content-between">
-        <router-link :to="{ name: 'projectDetails', params: {id: project.id}}"
+        <router-link :to="{ name: 'project', params: {id: project.id}}"
                      class="font-weight-bold">
           {{ project.title }}
         </router-link>
         <div class="btn-group" role="group">
-          <button @click="edit" class="btn btn-secondary">
+          <button @click="updateProject(project)" class="btn btn-secondary">
             Edit
           </button>
-          <button @click="del" class="btn btn-secondary">
+          <button @click="$modal.show('confirm-delete')" class="btn btn-secondary">
             Delete
           </button>
         </div>
       </div>
       <div class="card-body">
-        {{ project.description }} ==== {{ project.id }}
+        {{ project.description }}
       </div>
       <div class="card-footer">
         <a class="btn tag" href="#">Python</a>
@@ -28,45 +28,25 @@
         <a class="btn tag" href="#">Django</a>
         <a class="btn tag" href="#">Linux</a>
       </div>
+      <ConfirmDeleteModal :object="project" type="project"/>
     </div>
   </div>
 </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-import bootbox from 'bootbox';
+import { mapActions } from 'vuex';
+import ConfirmDeleteModal from '@/components/ConfirmDeleteModal.vue';
 
 export default {
   name: 'Project',
 
+  components: { ConfirmDeleteModal },
+
   props: ['project', 'index'],
 
   methods: {
-    ...mapGetters(['deleteProject']),
-    del() {
-      bootbox.confirm({
-        message: `Do you really want to delete ${this.project.title}?`,
-        buttons: {
-          confirm: {
-            label: 'Confirm',
-            className: 'btn-danger',
-          },
-          cancel: {
-            label: 'Cancel',
-            className: 'btn-success',
-          },
-        },
-        callback: (result) => {
-          if (result) {
-            this.deleteProject(this.project.id);
-          }
-        },
-      });
-    },
-    edit() {
-      console.log(this.project.id);
-    },
+    ...mapActions(['updateProject']),
   },
 };
 </script>

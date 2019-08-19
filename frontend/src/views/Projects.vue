@@ -1,6 +1,6 @@
 <template>
 <div class="container">
-  <div class="row justify-content-center my-4">
+  <div class="row justify-content-center my-2">
     <div class="col-10">
       <ErrorStack/>
       <div class="card shadow">
@@ -54,8 +54,12 @@ export default {
     }),
   },
 
-  mounted() {
-    this.fetchProjects();
+  created() {
+    this.fetchProjects(this.$route.query.page || 1);
+  },
+
+  watch: {
+    '$route.query.page': function fetch(page) { this.fetchProjects(page || 1); },
   },
 
   methods: {

@@ -26,15 +26,6 @@ export default {
     localStorage.setItem(tokenKey, newToken);
   },
 
-  appendAuthHeaders(data) {
-    const newData = data;
-    if (!newData.headers) {
-      newData.headers = {};
-    }
-    newData.headers.Authorization = `Bearer ${this.get(this.accessTokenKey)}`;
-    return newData;
-  },
-
   getAuthHeaders() {
     return {
       headers: {

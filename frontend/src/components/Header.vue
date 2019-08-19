@@ -23,7 +23,7 @@
       </router-link>
     </li>
     <li v-if="isAuthenticated">
-      <router-link :to="{ name: 'projects' }"
+      <router-link :to="{ name: 'projects',  query: { page: 1 }}"
          class="nav-link rounded font-weight-bold text-center mx-2 menu__item">
         Projects
       </router-link>

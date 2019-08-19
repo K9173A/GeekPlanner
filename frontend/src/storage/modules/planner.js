@@ -1,13 +1,12 @@
 import Vue from 'vue';
-
-import urlParser from '@/common/urlParser';
 import token from '@/common/token';
 
-const state = {
+const data = {
   pagination: {
     prevPageNumber: null,
     nextPageNumber: null,
     currPageNumber: 1,
+    totalPages: 0,
     count: 0,
   },
   project: {
@@ -26,67 +25,82 @@ const actions = {
    * @param context - Vuex context object.
    * @param pageNumber - page number where user will be redirected to.
    */
-  fetchProjects(context, pageNumber = 1) {
-    // console.log(pageNumber);
+  fetchProjects({ commit }, pageNumber) {
     Vue.axios
       .get(`planner/projects?page=${pageNumber}`, token.getAuthHeaders())
       .then((response) => {
-        const previousPageURL = response.data.previous;
-        const nextPageURL = response.data.next;
-        let currentPageNumber = 0;
-
-        if (previousPageURL) {
-          const p = parseInt(urlParser.parsePageNumberPagination(previousPageURL), 10);
-          context.commit('setPageNumber', { pagePosition: 'previous', pageNumber: p });
-        }
-
-        if (nextPageURL) {
-          const p = parseInt(urlParser.parsePageNumberPagination(nextPageURL), 10);
-          context.commit('setPageNumber', { pagePosition: 'next', pageNumber: p });
-        }
-
-        if (state.pagination.prevPageNumber && state.pagination.nextPageNumber) {
-          currentPageNumber = Math.trunc((response.data.next + response.data.previous) / 2);
-        } else if (state.pagination.prevPageNumber && !state.pagination.nextPageNumber) {
-          currentPageNumber = state.pagination.prevPageNumber + 1;
-        } else if (!state.pagination.prevPageNumber && state.pagination.nextPageNumber) {
-          currentPageNumber = 1;
-        } else {
-          currentPageNumber = -1;
-        }
-
-        context.commit(
-          'setPageNumber', { pagePosition: 'current', pageNumber: currentPageNumber },
-        );
-        context.commit('setProjects', response.data.results);
-        context.commit('setCount', response.data.count);
-        context.commit('setTotalPages', response.data.total_pages);
+        commit('setPageNumber', { pagePosition: 'previous', pageNumber: response.data.prev });
+        commit('setPageNumber', { pagePosition: 'current', pageNumber: response.data.curr });
+        commit('setPageNumber', { pagePosition: 'next', pageNumber: response.data.next });
+        commit('setProjects', response.data.results);
+        commit('setCount', response.data.count);
+        commit('setTotalPages', response.data.total_pages);
       })
-      .catch(error => context.commit('setError', error));
+      .catch(error => commit('setError', error));
+  },
+
+  updateProject({ commit }, id) {
+    Vue.axios
+      .patch(`planner/update_project/${id}`, token.getAuthHeaders())
+      .catch(error => commit('setError', error));
   },
   /**
-   * Deletes selected project. Shows modal window (bootbox) for user confirmation.
+   * Show confirmation window. if user confirms, deletes project on the server-side
+   * and then fetches list of projects again.
    * @param context - Vuex context object.
-   * @param id - selected project Id.
+   * @param project - project to be deleted.
    */
-  deleteProject(context, id) {
+  deleteProject({ commit, state, dispatch }, project) {
     Vue.axios
-      .delete(`planner/delete_project/${id}`, token.getAuthHeaders())
-      .then(response => context.commit('setProjects', response.projects))
-      .catch(error => context.commit('setError', error));
+      .delete(`planner/delete_project/${project.id}`, token.getAuthHeaders())
+      .then(() => dispatch('fetchProjects', state.pagination.currPageNumber))
+      .catch(error => commit('setError', error));
   },
-
-  loadProject(context, id) {
+  /**
+   * Loads project details.
+   * @param context - Vuex context object.
+   * @param id - project id.
+   */
+  loadProject({ commit }, id) {
     Vue.axios
       .get(`planner/project_details/${id}`, token.getAuthHeaders())
-      .then(response => context.commit('setProjectData', response.data))
-      .catch(error => context.commit('setError', error));
+      .then(response => commit('setProjectData', response.data))
+      .catch(error => commit('setError', error));
   },
 
-  // deleteCard(projectId, cardId) {
-  //   Vue.axios.delete('delete_card/',
-  //     this.addAuthHeader({'project_pk': projectId, 'card_pk': cardId})
-  //   ).catch(error => context.commit('setError', error));
+  updateCard({ commit }, id) {
+    Vue.axios
+      .patch(`planner/update_card/${id}`, token.getAuthHeaders())
+      .catch(error => commit('setError', error));
+  },
+  /**
+   * Show confirmation window. if user confirms, deletes card on the server-side
+   * and then deletes from Vue.
+   * @param context - Vuex context object.
+   * @param id - card id.
+   */
+  // deleteCard({ commit }, id) {
+  //   bootbox.confirm({
+  //     message: `Do you really want to delete card #${id}?`,
+  //     buttons: {
+  //       confirm: {
+  //         label: 'Confirm',
+  //         className: 'btn-danger',
+  //       },
+  //       cancel: {
+  //         label: 'Cancel',
+  //         className: 'btn-success',
+  //       },
+  //     },
+  //     callback: (deleteConfirmed) => {
+  //       if (deleteConfirmed) {
+  //         Vue.axios
+  //           .delete(`planner/delete_card/${id}`, token.getAuthHeaders())
+  //           .then(() => commit('deleteCard', id))
+  //           .catch(error => commit('setError', error));
+  //       }
+  //     },
+  //   });
   // },
 };
 
@@ -121,6 +135,13 @@ const mutations = {
   setProjectData(state, projectData) {
     state.project = projectData;
   },
+  deleteCard(state, id) {
+    Object.entries(state.project.cards).forEach((category, cards) => {
+      if (cards.find(card => card.id !== id)) {
+        state.project.cards.category = cards.filter(card => card.id !== id);
+      }
+    });
+  },
 };
 
 const getters = {};
@@ -128,6 +149,6 @@ const getters = {};
 export default {
   actions,
   mutations,
-  state,
+  state: data,
   getters,
 };

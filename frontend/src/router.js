@@ -3,7 +3,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 import token from './common/token';
-import auth from './storage/modules/auth';
+import store from './storage/index';
 
 
 Vue.use(Router);
@@ -48,24 +48,32 @@ const router = new Router({
       component: () => import('./views/CreateProject.vue'),
     },
     {
-      path: '/project/:id',
-      name: 'projectDetails',
+      path: '/project/:id/',
+      name: 'project',
       props: true,
-      component: () => import('./views/ProjectDetails.vue'),
+      component: () => import('./views/Project.vue'),
+    },
+    {
+      path: '*',
+      redirect: '/',
     },
   ],
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  store.commit('clear');
+  if (to.meta.requiresAuth) {
     const accessToken = token.get(token.accessTokenKey);
     const refreshToken = token.get(token.refreshTokenKey);
     if (accessToken === null) {
-      next('/register');
+      next({ name: 'register' });
     } else {
       Vue.axios
         .post('auth/jwt/verify/', { token: accessToken })
-        .then(() => next())
+        .then(() => {
+          store.commit('setAuthenticated', true);
+          next();
+        })
         .catch(() => {
           Vue.axios
             .post('auth/jwt/verify/', { token: refreshToken })
@@ -73,12 +81,17 @@ router.beforeEach((to, from, next) => {
               Vue.axios
                 .post('auth/jwt/refresh/', { refresh: refreshToken })
                 .then((data) => {
-                  auth.mutations.setUserAuthentication(data);
+                  store.commit('setAuthenticationTokens', data);
+                  store.commit('setAuthenticated', true);
                   next();
                 })
-                .catch(() => next('/register'));
+                .catch(() => {
+                  next({ name: 'register' });
+                });
             })
-            .catch(() => next('/login'));
+            .catch(() => {
+              next({ name: 'login' });
+            });
         });
     }
   } else {
