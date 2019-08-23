@@ -1,33 +1,16 @@
 <template>
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-6">
-      <ErrorStack/>
-      <div class="card gp-form my-4">
-        <div class="card-header text-center text-uppercase font-weigt-bold">
-          Registration
-        </div>
-        <div class="card-body">
-          <form v-on:submit.prevent="submit" method="post">
-            <vue-form-generator :schema="schema" :model="model" :options="formOptions">
-            </vue-form-generator>
-            <input class="btn btn-primary col-12" type="submit" value="Submit">
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<form v-on:submit.prevent="submit" method="post">
+  <vue-form-generator :schema="schema" :model="model" :options="formOptions">
+  </vue-form-generator>
+  <input class="btn btn-primary col-12" type="submit" value="Submit">
+</form>
 </template>
 
 <script>
 import { mapMutations } from 'vuex';
-import ErrorStack from '@/components/ErrorStack.vue';
 
 export default {
-  name: 'Register',
-
-  components: { ErrorStack },
+  name: 'RegisterForm',
 
   data() {
     return {
@@ -112,7 +95,6 @@ export default {
 
   methods: {
     ...mapMutations(['setError']),
-    // Registers user by sending his credentials to the Django REST backend.
     submit() {
       this.axios
         .post('auth/users/', {

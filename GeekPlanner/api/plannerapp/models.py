@@ -1,7 +1,6 @@
 """
 Module for plannerapp models.
 """
-import os
 import functools
 
 from django.db import models
@@ -34,13 +33,6 @@ class Project(models.Model):
         verbose_name='description',
         max_length=256,
         blank=True
-    )
-    # Creator of the project
-    owner = models.ForeignKey(
-        User,
-        verbose_name='owner',
-        null=True,
-        on_delete=models.SET_NULL
     )
     # Date when project was created
     date_created = models.DateTimeField(
@@ -77,16 +69,39 @@ class Project(models.Model):
         """
         return f'{self.title} ({self.date_created})'
 
-    @property
-    def thumbnail_url(self):
-        """
-        Gets path to the project thumbnail with specified name. if it
-        does not exist, then replaces it with default thumbnail.
-        :return: path to the project thumbnail.
-        """
-        if self.thumbnail and hasattr(self.thumbnail, 'url'):
-            return self.thumbnail.url
-        return os.path.join(settings.STATIC_URL, 'img', 'default', 'thumbnail.png')
+
+class Participation(models.Model):
+    """
+    Collects data of projects participants.
+    """
+    # Project
+    project = models.ForeignKey(
+        Project,
+        verbose_name='project',
+        related_name='participation',
+        null=True,
+        on_delete=models.SET_NULL
+    )
+    # Project participant
+    user = models.ForeignKey(
+        User,
+        verbose_name='user',
+        null=True,
+        on_delete=models.SET_NULL,
+    )
+    # Is this user an owner of this project?
+    is_owner = models.BooleanField(
+        verbose_name='isOwner',
+        default=False,
+    )
+    # If user leaves, this field will be set to False
+    is_active = models.BooleanField(
+        verbose_name='activity',
+        default=True
+    )
+
+    class Meta:
+        unique_together = (('project', 'user'),)
 
 
 class Category(models.Model):
@@ -185,11 +200,3 @@ class Card(models.Model):
         :return: string with card title and date when it was created.
         """
         return f'{self.title} ({self.date_created})'
-
-    @property
-    def color(self):
-        """
-        Gets specific css class name depending on card priority level.
-        :return: css class name.
-        """
-        return f'gp-project-card__lvl{self.priority}'

@@ -5,10 +5,10 @@
       {{ card.title }}
     </div>
     <div class="btn-group" role="group">
-      <button @click="updateCard(id)" class="btn btn-secondary">
+      <button @click="updateCard" class="btn btn-secondary">
         Edit
       </button>
-      <button @click="deleteCard(id)" class="btn btn-secondary">
+      <button @click="deleteCard" class="btn btn-secondary">
         Delete
       </button>
     </div>
@@ -18,23 +18,31 @@
       {{ card.description }}
     </div>
   </div>
+  <ConfirmDeleteModal :object="card" type="card"/>
 </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapMutations } from 'vuex';
+import ConfirmDeleteModal from '@/components/ConfirmDeleteModal.vue';
 
 export default {
   name: 'Card',
 
   props: ['card'],
 
+  components: { ConfirmDeleteModal },
+
   computed: {
     id: this.card.id,
   },
 
   methods: {
-    ...mapActions(['deleteCard, updateCard']),
+  ...mapMutations(['setError', 'setProjectData', 'setProjectInformation']),
+    updateCard() {
+      this.setProjectInformation(this.project);
+      this.$router.push({ name: 'updateCard', params: { id: this.id } });
+    },
   },
 };
 </script>

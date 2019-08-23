@@ -7,6 +7,7 @@ from .models import (
     Project,
     Card,
     Category,
+    Participation,
 )
 
 
@@ -17,7 +18,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ('id', 'title', 'description', 'thumbnail', 'is_public', 'owner',)
+        fields = ('id', 'title', 'description', 'thumbnail', 'is_public',)
 
 
 class CardSerializer(serializers.ModelSerializer):
@@ -36,3 +37,10 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('id', 'name',)
+
+
+class ParticipationSerializes(serializers.ModelSerializer):
+    """Serialize of Participation model."""
+    class Meta:
+        model = Participation
+        fields = ('project', 'user', 'is_owner',)

@@ -29,7 +29,11 @@ const router = new Router({
     {
       path: '/register',
       name: 'register',
-      component: () => import('./views/Register.vue'),
+      props: {
+        title: 'Registration',
+        form: 'RegisterForm',
+      },
+      component: () => import('./components/FormWrapper.vue'),
     },
     {
       path: '/activate/:uid/:token',
@@ -40,17 +44,37 @@ const router = new Router({
     {
       path: '/login',
       name: 'login',
-      component: () => import('./views/Login.vue'),
+      props: {
+        title: 'Sign In',
+        form: 'LoginForm',
+      },
+      component: () => import('./components/FormWrapper.vue'),
     },
     {
       path: '/project/create',
       name: 'createProject',
-      component: () => import('./views/CreateProject.vue'),
+      props: {
+        title: 'New Project',
+        form: 'CreateProjectForm',
+      },
+      meta: { requiresAuth: true },
+      component: () => import('./components/FormWrapper.vue'),
     },
     {
-      path: '/project/:id/',
+      path: '/project/update/:id',
+      name: 'updateProject',
+      props: {
+        title: 'Update Project',
+        form: 'UpdateProjectForm',
+      },
+      meta: { requiresAuth: true },
+      component: () => import('./components/FormWrapper.vue'),
+    },
+    {
+      path: '/project/:id',
       name: 'project',
       props: true,
+      meta: { requiresAuth: true },
       component: () => import('./views/Project.vue'),
     },
     {

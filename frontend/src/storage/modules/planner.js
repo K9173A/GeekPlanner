@@ -9,10 +9,23 @@ const data = {
     totalPages: 0,
     count: 0,
   },
-  project: {
-    information: null,
-    categories: null,
-    cards: null,
+  currentSelection: {
+    project: {
+      information: {
+        title: '',
+        description: '',
+        thumbnail: null,
+        isPublic: null,
+      },
+      categories: null,
+      cards: null,
+    },
+    category: null,
+    card: {
+      title: '',
+      description: '',
+      priority: 2,
+    },
   },
   projects: [],
 };
@@ -38,39 +51,21 @@ const actions = {
       })
       .catch(error => commit('setError', error));
   },
-
-  updateProject({ commit }, id) {
-    Vue.axios
-      .patch(`planner/update_project/${id}`, token.getAuthHeaders())
-      .catch(error => commit('setError', error));
-  },
   /**
-   * Show confirmation window. if user confirms, deletes project on the server-side
-   * and then fetches list of projects again.
+   * Deletes project (sets it as inactive).
    * @param context - Vuex context object.
    * @param project - project to be deleted.
    */
   deleteProject({ commit, state, dispatch }, project) {
     Vue.axios
-      .delete(`planner/delete_project/${project.id}`, token.getAuthHeaders())
+      .delete(`planner/delete_project/${project.id}/`, token.getAuthHeaders())
       .then(() => dispatch('fetchProjects', state.pagination.currPageNumber))
-      .catch(error => commit('setError', error));
-  },
-  /**
-   * Loads project details.
-   * @param context - Vuex context object.
-   * @param id - project id.
-   */
-  loadProject({ commit }, id) {
-    Vue.axios
-      .get(`planner/project_details/${id}`, token.getAuthHeaders())
-      .then(response => commit('setProjectData', response.data))
       .catch(error => commit('setError', error));
   },
 
   updateCard({ commit }, id) {
     Vue.axios
-      .patch(`planner/update_card/${id}`, token.getAuthHeaders())
+      .patch(`planner/update_card/${id}/`, token.getAuthHeaders())
       .catch(error => commit('setError', error));
   },
   /**
@@ -133,12 +128,16 @@ const mutations = {
     state.pagination.project = project;
   },
   setProjectData(state, projectData) {
-    state.project = projectData;
+    state.currentSelection.project = projectData;
+  },
+  setProjectInformation(state, information) {
+    state.currentSelection.project.information = information;
   },
   deleteCard(state, id) {
-    Object.entries(state.project.cards).forEach((category, cards) => {
+    Object.entries(state.currentSelection.project.cards).forEach((category, cards) => {
       if (cards.find(card => card.id !== id)) {
-        state.project.cards.category = cards.filter(card => card.id !== id);
+        state.currentSelection.project.cards.category =
+          cards.filter(card => card.id !== id);
       }
     });
   },
