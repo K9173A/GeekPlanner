@@ -1,7 +1,7 @@
 <template>
 <div class="container mb-4">
   <div class="row justify-content-center">
-    <div class="col-10">
+    <div class="col-12">
       <ErrorStack/>
       <div class="card shadow">
         <div class="card-header">
@@ -23,10 +23,10 @@
           </div>
         </div>
         <div class="card-body">
-          <div class="container">
-            <div class="row">
-              <div v-for="category in categories" :key="category.id" class="col">
-                <Category :name="category.name" />
+          <div class="container-fluid d-flex flex-column h-100">
+            <div class="row justify-content-around h-100">
+              <div v-for="category in categories" :key="category.id" class="col category">
+                <Category :category="category"/>
               </div>
             </div>
           </div>
@@ -48,29 +48,28 @@ import token from '@/common/token';
 export default {
   name: 'Project',
 
-  components: { ErrorStack, Category, ConfirmDeleteModal },
-
   props: ['id'],
+
+  components: { ErrorStack, Category, ConfirmDeleteModal },
 
   computed: {
     ...mapState({
-      project: state => state.planner.project,
-      title: state => state.planner.project.information.title,
-      categories: state => state.planner.project.categories,
-      cards: state => state.planner.project.cards,
+      project: state => state.planner.currentSelection.project,
+      title: state => state.planner.currentSelection.project.information.title,
+      categories: state => state.planner.currentSelection.project.categories,
+      cards: state => state.planner.currentSelection.project.cards,
     }),
   },
 
-  created() {
-    this.loadProject();
-  },
-
   methods: {
-    ...mapMutations(['setError', 'setProjectData', 'setProjectInformation']),
+    ...mapMutations(['setError', 'setProjectCategories', 'setProjectInformation']),
     loadProject() {
       this.axios
         .get(`planner/project_details/${this.id}/`, token.getAuthHeaders())
-        .then(response => this.setProjectData(response.data))
+        .then(response => {
+          this.setProjectInformation(response.data.information);
+          this.setProjectCategories(response.data.categories);
+        })
         .catch(error => this.setError(error));
     },
 
@@ -78,6 +77,16 @@ export default {
       this.setProjectInformation(this.project);
       this.$router.push({ name: 'updateProject', params: { id: this.id } });
     },
+
+    deleteCard() {
+      this.setProjectInformation(this.project);
+      this.setDeleteObjectType('project');
+      this.$modal.show('confirm-delete');
+    }
+  },
+
+  created() {
+    this.loadProject();
   },
 };
 </script>
@@ -85,5 +94,8 @@ export default {
 <style scoped>
 .container {
   min-height: 512px;
+}
+.category {
+  height: 100%;
 }
 </style>

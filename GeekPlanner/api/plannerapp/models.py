@@ -78,7 +78,7 @@ class Participation(models.Model):
     project = models.ForeignKey(
         Project,
         verbose_name='project',
-        related_name='participation',
+        related_name='project_participation_set',
         null=True,
         on_delete=models.SET_NULL
     )
@@ -86,6 +86,7 @@ class Participation(models.Model):
     user = models.ForeignKey(
         User,
         verbose_name='user',
+        related_name='user_participation_set',
         null=True,
         on_delete=models.SET_NULL,
     )

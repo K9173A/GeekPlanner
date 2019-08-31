@@ -29,11 +29,7 @@ const router = new Router({
     {
       path: '/register',
       name: 'register',
-      props: {
-        title: 'Registration',
-        form: 'RegisterForm',
-      },
-      component: () => import('./components/FormWrapper.vue'),
+      component: () => import('./components/form/RegisterForm.vue'),
     },
     {
       path: '/activate/:uid/:token',
@@ -44,31 +40,19 @@ const router = new Router({
     {
       path: '/login',
       name: 'login',
-      props: {
-        title: 'Sign In',
-        form: 'LoginForm',
-      },
-      component: () => import('./components/FormWrapper.vue'),
+      component: () => import('./components/form/LoginForm.vue'),
     },
     {
       path: '/project/create',
       name: 'createProject',
-      props: {
-        title: 'New Project',
-        form: 'CreateProjectForm',
-      },
       meta: { requiresAuth: true },
-      component: () => import('./components/FormWrapper.vue'),
+      component: () => import('./components/form/CreateProjectForm.vue'),
     },
     {
       path: '/project/update/:id',
       name: 'updateProject',
-      props: {
-        title: 'Update Project',
-        form: 'UpdateProjectForm',
-      },
       meta: { requiresAuth: true },
-      component: () => import('./components/FormWrapper.vue'),
+      component: () => import('./components/form/UpdateProjectForm.vue'),
     },
     {
       path: '/project/:id',
@@ -76,6 +60,18 @@ const router = new Router({
       props: true,
       meta: { requiresAuth: true },
       component: () => import('./views/Project.vue'),
+    },
+    {
+      path: '/card/create',
+      name: 'createCard',
+      meta: { requiresAuth: true },
+      component: () => import('./components/form/CreateCardForm.vue'),
+    },
+    {
+      path: '/card/update/:id',
+      name: 'updateCard',
+      meta: { requiresAuth: true },
+      component: () => import('./components/form/UpdateCardForm.vue'),
     },
     {
       path: '*',

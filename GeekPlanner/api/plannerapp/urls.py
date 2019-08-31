@@ -39,19 +39,29 @@ urlpatterns = [
         planner_api.ProjectDestroyAPIView.as_view(),
         name='delete_project'
     ),
-    # path(
-    #     'create_card/project/<int:project_pk>/category/<int:category_pk>/',
-    #     planner_api.CardCreateView.as_view(),
-    #     name='create_card'
-    # ),
-    # path(
-    #     'delete_card/<int:pk>/',
-    #     planner_api.CardDeleteView.as_view(),
-    #     name='delete_card'
-    # ),
-    # path(
-    #     'update_card/<int:pk>/project/<int:project_pk>/',
-    #     planner_api.CardUpdateView.as_view(),
-    #     name='update_card'
-    # ),
+    path(
+        'cards/project/<int:project_pk>/category/<int:category_pk>/',
+        planner_api.CardListAPIView.as_view(),
+        name='cards',
+    ),
+    path(
+        'create_card/project/<int:project_pk>/category/<int:category_pk>/',
+        planner_api.CardCreateAPIView.as_view(),
+        name='create_card'
+    ),
+    path(
+        'card_details/<int:pk>/',
+        planner_api.CardRetrieveUpdateDestroyAPIView.as_view(),
+        name='card_details'
+    ),
+    path(
+        'update_card/<int:pk>/',
+        planner_api.CardRetrieveUpdateDestroyAPIView.as_view(),
+        name='update_card'
+    ),
+    path(
+        'delete_card/<int:pk>/',
+        planner_api.CardRetrieveUpdateDestroyAPIView.as_view(),
+        name='delete_card'
+    ),
 ]

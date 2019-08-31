@@ -1,16 +1,8 @@
 <template>
-<div class="card shadow-sm">
+<div class="card shadow-sm my-3" :class="cardColor">
   <div class="card-header px-2 py-2">
-    <div class="h5 font-weight-bold">
+    <div class="font-weight-bold">
       {{ card.title }}
-    </div>
-    <div class="btn-group" role="group">
-      <button @click="updateCard" class="btn btn-secondary">
-        Edit
-      </button>
-      <button @click="deleteCard" class="btn btn-secondary">
-        Delete
-      </button>
     </div>
   </div>
   <div class="card-body">
@@ -18,30 +10,45 @@
       {{ card.description }}
     </div>
   </div>
-  <ConfirmDeleteModal :object="card" type="card"/>
+  <a href="#" @click.prevent="update" class="stretched-link"></a>
 </div>
 </template>
 
 <script>
 import { mapMutations } from 'vuex';
-import ConfirmDeleteModal from '@/components/ConfirmDeleteModal.vue';
 
 export default {
   name: 'Card',
 
   props: ['card'],
 
-  components: { ConfirmDeleteModal },
-
   computed: {
-    id: this.card.id,
+    cardColor() {
+      switch (this.card.priority) {
+        case 0:
+          return 'text-white bg-dark';
+        case 1:
+          return 'text-white bg-secondary';
+        case 2:
+          return 'bg-light';
+        case 3:
+          return 'text-white bg-primary';
+        case 4:
+          return 'text-white bg-warning';
+        case 5:
+          return 'text-white bg-danger';
+        default:
+          return 'bg-light';
+      }
+    },
   },
 
   methods: {
-  ...mapMutations(['setError', 'setProjectData', 'setProjectInformation']),
-    updateCard() {
-      this.setProjectInformation(this.project);
-      this.$router.push({ name: 'updateCard', params: { id: this.id } });
+    ...mapMutations(['setCurrentCard', 'setCurrentCategory']),
+    update() {
+      this.setCurrentCard(this.card);
+      this.setCurrentCategory(this.card.category);
+      this.$router.push({ name: 'updateCard', params: { id: this.card.id } });
     },
   },
 };

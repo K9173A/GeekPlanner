@@ -4,20 +4,28 @@
     <img src="https://via.placeholder.com/256" alt="">
     <div class="col">
       <div class="card-header d-flex align-items-center justify-content-between">
-        <button @click="loadProject" class="btn btn-link font-weight-bold">
+        <div v-if="project.is_owner === null" class="font-weight-bold">
+          {{ project.title }}
+        </div>
+        <button v-else @click="loadProject" class="btn btn-link font-weight-bold">
           {{ project.title }}
         </button>
-        <button @click="participate(true)">
-          Join
-        </button>
-        <button @click="participate(false)">
-          Leave
-        </button>
         <div class="btn-group" role="group">
-          <button @click="updateProject" class="btn btn-sm btn-secondary">
+          {{ project.is_owner }}
+          <button v-if="project.is_owner === null" @click="participate(true)"
+                  class="btn btn-sm btn-secondary">
+            Join
+          </button>
+          <button v-else @click="participate(false)"
+                  class="btn btn-sm btn-secondary">
+            Leave
+          </button>
+          <button v-if="project.is_owner !== null" @click="updateProject"
+                  class="btn btn-sm btn-secondary">
             Edit
           </button>
-          <button @click="$modal.show('confirm-delete')" class="btn btn-sm btn-secondary">
+          <button v-if="project.is_owner === true" @click="deleteProject"
+                  class="btn btn-sm btn-secondary">
             Delete
           </button>
         </div>
@@ -52,19 +60,25 @@ export default {
   props: ['project', 'index'],
 
   methods: {
-    ...mapMutations(['setProjectInformation', 'setProjectData', 'setError']),
+    ...mapMutations(['setProjectInformation', 'setProjectData', 'setError', 'setDeleteObjectType']),
 
     participate(value) {
       this.axios
-        .patch(`planner/participate_project/${this.project.id}`,
+        .patch(`planner/participate_project/${this.project.id}/`,
           { participate: value }, token.getAuthHeaders())
-        .then(() => this.$router.go(-1))
+        .then(() => { this.project.is_owner = value; })
         .catch(error => this.setError(error));
     },
 
     updateProject() {
       this.setProjectInformation(this.project);
       this.$router.push({ name: 'updateProject', params: { id: this.project.id } });
+    },
+
+    deleteProject() {
+      this.setProjectInformation(this.project);
+      this.setDeleteObjectType('project');
+      this.$modal.show('confirm-delete');
     },
 
     loadProject() {

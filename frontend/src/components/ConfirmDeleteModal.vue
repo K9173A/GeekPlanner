@@ -7,7 +7,7 @@
   </div>
   <div class="card-body">
     <p>
-      Do you really want to delete this {{ type }}?
+      Do you really want to delete this object?
     </p>
   </div>
   <div class="card-footer">
@@ -22,27 +22,35 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 
 export default {
   name: 'ConfirmDeleteModal',
 
-  props: ['object', 'type'],
+  computed: {
+    ...mapState({
+      objectType: state => state.planner.objectTypeToDelete,
+      currentSelection: state => state.planner.currentSelection,
+    }),
+  },
 
   methods: {
-    ...mapActions(['deleteProject']),
+    ...mapActions(['deleteProject', 'deleteCard']),
     deleteObject() {
       this.$modal.hide('confirm-delete');
-      switch (this.type) {
+      switch (this.objectType) {
         case 'project':
-          this.deleteProject(this.object);
+          this.deleteProject(this.currentSelection.project);
           break;
         case 'card':
+          this.deleteCard(this.currentSelection.card);
+          this.$router.go(-1);
           break;
         case 'category':
+          // TODO
           break;
         default:
-          throw Error(`Invalid object type: ${this.object}!`);
+          throw Error('Invalid object type!');
       }
     },
   },

@@ -17,8 +17,8 @@ const data = {
         thumbnail: null,
         isPublic: null,
       },
-      categories: null,
-      cards: null,
+      categories: [],
+      cards: {},
     },
     category: null,
     card: {
@@ -27,6 +27,7 @@ const data = {
       priority: 2,
     },
   },
+  objectTypeToDelete: null,
   projects: [],
 };
 
@@ -58,50 +59,55 @@ const actions = {
    */
   deleteProject({ commit, state, dispatch }, project) {
     Vue.axios
-      .delete(`planner/delete_project/${project.id}/`, token.getAuthHeaders())
+      .delete(`planner/delete_project/${project.information.id}/`, token.getAuthHeaders())
       .then(() => dispatch('fetchProjects', state.pagination.currPageNumber))
       .catch(error => commit('setError', error));
   },
-
-  updateCard({ commit }, id) {
-    Vue.axios
-      .patch(`planner/update_card/${id}/`, token.getAuthHeaders())
-      .catch(error => commit('setError', error));
+  /**
+   * Fetches cards for the specific category.
+   * @param commit - function to call mutations.
+   * @param state - state object.
+   * @param category - Category object.
+   */
+  fetchCards({ commit, state }, category) {
+    return Vue.axios
+      .get(`planner/cards/project/${state.currentSelection.project.information.id}` +
+        `/category/${category.id}/`, token.getAuthHeaders())
+      .then((response) => {
+        commit('setProjectCategoryCards', { category, cards: response.data });
+        return true;
+      })
+      .catch((error) => {
+        commit('setError', error);
+        return false;
+      });
   },
   /**
    * Show confirmation window. if user confirms, deletes card on the server-side
    * and then deletes from Vue.
-   * @param context - Vuex context object.
-   * @param id - card id.
+   * @param commit - function to call mutations.
+   * @param dispatch - function to call actions.
+   * @param card - Card object to be deleted.
+   * @param category - Category object which is used to fetch its cards again.
    */
-  // deleteCard({ commit }, id) {
-  //   bootbox.confirm({
-  //     message: `Do you really want to delete card #${id}?`,
-  //     buttons: {
-  //       confirm: {
-  //         label: 'Confirm',
-  //         className: 'btn-danger',
-  //       },
-  //       cancel: {
-  //         label: 'Cancel',
-  //         className: 'btn-success',
-  //       },
-  //     },
-  //     callback: (deleteConfirmed) => {
-  //       if (deleteConfirmed) {
-  //         Vue.axios
-  //           .delete(`planner/delete_card/${id}`, token.getAuthHeaders())
-  //           .then(() => commit('deleteCard', id))
-  //           .catch(error => commit('setError', error));
-  //       }
-  //     },
-  //   });
-  // },
+  deleteCard({ commit, dispatch, state }, card) {
+    // TODO:
+    const category = state.currentSelection.project.categories.find(element => {
+      return element.id === state.currentSelection.category;
+    });
+    Vue.axios
+      .delete(`planner/delete_card/${card.id}/`, token.getAuthHeaders())
+      .then(() => dispatch('fetchCards', category))
+      .catch(error => commit('setError', error));
+  },
 };
 
 const mutations = {
-  setProjects(state, projects) {
-    state.projects = projects;
+  setCount(state, count) {
+    state.pagination.count = count;
+  },
+  setTotalPages(state, totalPages) {
+    state.pagination.totalPages = totalPages;
   },
   setPageNumber(state, { pagePosition, pageNumber }) {
     switch (pagePosition) {
@@ -118,29 +124,29 @@ const mutations = {
         throw Error(`Undefined pagePosition value: ${pagePosition}`);
     }
   },
-  setCount(state, count) {
-    state.pagination.count = count;
+  setProjects(state, projects) {
+    state.projects = projects;
   },
-  setTotalPages(state, totalPages) {
-    state.pagination.totalPages = totalPages;
+  setCurrentCategory(state, category) {
+    state.currentSelection.category = category;
   },
-  setProject(state, project) {
-    state.pagination.project = project;
-  },
-  setProjectData(state, projectData) {
-    state.currentSelection.project = projectData;
+  setCurrentCard(state, card) {
+    state.currentSelection.card = card;
   },
   setProjectInformation(state, information) {
     state.currentSelection.project.information = information;
   },
-  deleteCard(state, id) {
-    Object.entries(state.currentSelection.project.cards).forEach((category, cards) => {
-      if (cards.find(card => card.id !== id)) {
-        state.currentSelection.project.cards.category =
-          cards.filter(card => card.id !== id);
-      }
-    });
+  setProjectCategories(state, categories) {
+    state.currentSelection.project.categories = categories;
   },
+  setProjectCategoryCards(state, { category, cards }) {
+    if (cards) {
+      state.currentSelection.project.cards[category.name] = cards;
+    }
+  },
+  setDeleteObjectType(state, objectType) {
+    state.objectTypeToDelete = objectType;
+  }
 };
 
 const getters = {};

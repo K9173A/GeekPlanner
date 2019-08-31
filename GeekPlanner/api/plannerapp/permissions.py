@@ -1,65 +1,88 @@
 """
 Module for plannerapp custom permission classes.
+Actions:
+* POST = CREATE
+* PUT/PATCH = UPDATE
+* DELETE = DELETE
+* GET = RETRIEVE
 """
 from django.db.models import Q
 
 from rest_framework import permissions
 
-from .models import (
-    Project,
-    Card,
-    Category,
-    Participation,
-)
+from .models import Participation, Card
+
+
+def is_project_owner(project_id, user_id, is_owner=True):
+    """
+    Checks if the user is an owner of the project.
+    :param project_id: project Id.
+    :param user_id: user Id.
+    :param is_owner: owner flag.
+    :return: boolean result of checking.
+    """
+    participation = Participation.objects.get(
+        Q(project_id=project_id) &
+        Q(user_id=user_id) &
+        Q(is_owner=is_owner)
+    )
+    return participation is not None
+
+
+def is_project_participant(project_id, user_id):
+    """
+    Checks if the user is a participant of the project.
+    :param project_id: project Id.
+    :param user_id: user Id.
+    :return: boolean result of checking.
+    """
+    participation = Participation.objects.get(
+        Q(project_id=project_id) &
+        Q(user_id=user_id)
+    )
+    return participation is not None
 
 
 class ProjectPermissions(permissions.BasePermission):
     """
-    Permissions allows to delete/modify project information
-    only for its owner.
+    Permissions which restricts project participants from making
+    inappropriate actions with Project instances.
     """
     def has_object_permission(self, request, view, obj):
         """
-        Checks whether user can modify project objects (categories and cards)
-        or not.
-        :param request: request object.
+        Checks whether user can modify project object or not.
+        :param request: Request object.
         :param view: view object.
         :param obj: object which user tries to modify.
         :return: boolean result of permissions checking.
         """
-        # Modification/Deleting of Projects is allowed only for owners
-        if request.method in ['POST', 'PATCH', 'PUT', "DELETE"]:
-            participation = Participation.objects.get(
-                Q(project=obj.id) &
-                Q(user=request.user) &
-                Q(is_owner=True)
-            )
-            return participation is not None
-        elif request.method in ['GET']:
-            return True
-        else:
-            return False
+        # Project admin can delete project
+        if request.method in ['DELETE']:
+            return is_project_owner(obj.id, request.user.id)
+        # Regular participants can modify projects and retrieve its content
+        if request.method in ['PATCH', 'PUT', 'GET', 'OPTIONS']:
+            return is_project_participant(obj.id, request.user.id)
+        # Any other options are not implemented yet, so return False
+        return False
 
 
-class ProjectDataPermissions(permissions.BasePermission):
+class ProjectContentPermissions(permissions.BasePermission):
     """
-    Permissions which allow users to modify content when they
-    are part of a project.
+    Permissions which restricts project participants from making
+    inappropriate actions with project content (Categories and Cards).
     """
     def has_object_permission(self, request, view, obj):
-        # Modification/Deleting of Cards
-        if isinstance(obj, Card):
-            participation = Participation.objects.get(
-                Q(project=obj.project) &
-                Q(user=request.user)
-            )
-            return participation is not None
-        # Modification/Deleting of Categories (currently unavailable)
-        elif isinstance(obj, Category):
-            participation = Participation.objects.get(
-                Q(project=obj.projects) &
-                Q(user=request.user)
-            )
-            return participation is not None
-        else:
-            return False
+        """
+        Checks whether user can modify object of project content or not.
+        :param request: Request object.
+        :param view: view object.
+        :param obj: object which user tries to modify.
+        :return: boolean result of permissions checking.
+        """
+        # Both admins and project participants can perform these actions
+        if request.method in ['POST', 'PATCH', 'PUT', 'GET', 'DELETE', 'OPTIONS']:
+            if isinstance(obj, Card):
+                return is_project_participant(obj.project_id, request.user.id)
+            # if isinstance(obj, Category):
+            #     return None
+        return False

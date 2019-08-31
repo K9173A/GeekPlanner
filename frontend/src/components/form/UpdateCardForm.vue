@@ -1,29 +1,54 @@
 <template>
-<form v-on:submit.prevent="update" method="post">
-  <vue-form-generator :schema="schema" :model="model" :options="formOptions">
-  </vue-form-generator>
-  <div class="d-flex justify-content-around px-4 py-4">
-    <input class="btn btn-primary col-5" type="submit" value="Save">
-    <button @click="$router.go(-1)" class="btn btn-primary col-5">
-      Back
-    </button>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-6">
+      <ErrorStack/>
+      <div class="card my-4 gp-form">
+        <div class="card-header text-center text-uppercase font-weigt-bold">
+          {{ title }}
+        </div>
+        <div class="card-body">
+          <form v-on:submit.prevent="submit" id="update-card-form">
+            <vue-form-generator :schema="schema" :model="model" :options="formOptions">
+            </vue-form-generator>
+          </form>
+          <div class="d-flex justify-content-around px-4 py-4">
+            <button @click="$router.go(-1)" class="btn btn-primary col-3">
+              Back
+            </button>
+            <button @click="deleteCard" class="btn btn-primary col-3">
+              Delete
+            </button>
+            <input class="btn btn-primary col-3" type="submit"
+                   form="update-card-form" value="Save">
+          </div>
+        </div>
+      </div>
+      <ConfirmDeleteModal />
+    </div>
   </div>
-</form>
+</div>
 </template>
 
 <script>
 import { mapState, mapMutations } from 'vuex';
 import token from '@/common/token';
+import ErrorStack from '@/components/ErrorStack.vue';
+import ConfirmDeleteModal from '@/components/ConfirmDeleteModal.vue';
 
 export default {
   name: 'UpdateCardForm',
 
+  components: { ErrorStack, ConfirmDeleteModal },
+
   data() {
     return {
+      title: 'Edit Card',
       model: {
         title: '',
         description: '',
         priority: '',
+        category: '',
       },
       schema: {
         groups: [
@@ -51,7 +76,7 @@ export default {
                 type: 'select',
                 label: 'Priority',
                 model: 'priority',
-                values: function() {
+                values: function fn() {
                   return [
                     { id: 0, name: 'Lowest' },
                     { id: 1, name: 'Low' },
@@ -59,31 +84,71 @@ export default {
                     { id: 3, name: 'High' },
                     { id: 4, name: 'Very High' },
                     { id: 5, name: 'Highest' },
-                  ]
+                  ];
                 },
                 default: 'Normal',
-              }
-            ]
+              },
+              {
+                type: 'select',
+                label: 'Category',
+                model: 'category',
+                required: true,
+                values: function fn() {
+                  return this.$store.state.planner.currentSelection.project.categories;
+                },
+                default: this.$store.state.planner.currentSelection.category,
+              },
+            ],
           },
         ],
-      }
-    }
+      },
+      formOptions: {
+        validateAfterLoad: true,
+        validateAfterChanged: true,
+        validateAsync: true,
+      },
+    };
+  },
+
+  computed: {
+    ...mapState({
+      card: state => state.planner.currentSelection.card,
+      category: state => state.planner.currentSelection.category,
+      project: state => state.planner.currentSelection.project,
+    }),
   },
 
   methods: {
-    ...mapMutations(['setError']),
-    update() {
+    ...mapMutations(['setError', 'setCurrentCard', 'setCurrentCategory', 'setDeleteObjectType']),
+    submit() {
       this.axios
-        .patch(`planner/update_card/${this.card.id}`, {
+        .patch(`planner/update_card/${this.card.id}/`, {
           title: this.model.title,
           description: this.model.description,
           priority: this.model.priority,
+          category: this.model.category,
+          project: this.project.information.id,
         }, token.getAuthHeaders())
         .then(() => this.$router.go(-1))
         .catch(error => this.setError(error));
     },
 
-  }
+    deleteCard() {
+      this.setCurrentCard(this.card);
+      this.setCurrentCategory(this.category); // ???
+      this.setDeleteObjectType('card');
+      this.$modal.show('confirm-delete');
+    }
+  },
+
+  created() {
+    this.model = {
+      title: this.card.title,
+      description: this.card.description,
+      priority: this.card.priority,
+      category: this.category,
+    };
+  },
 };
 </script>
 

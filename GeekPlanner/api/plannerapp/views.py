@@ -5,7 +5,7 @@ from django.db.models import Q
 
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .serializers import (
@@ -22,7 +22,7 @@ from .models import (
 from .pagination import ProjectPageNumberPagination
 from .permissions import (
     ProjectPermissions,
-    ProjectDataPermissions,
+    ProjectContentPermissions,
 )
 
 
@@ -36,8 +36,8 @@ def set_project_participation(request, pk):
     :param pk: project PK.
     :return: Response with HTTP 200 status code.
     """
-    participation = Participation.objects.get_or_create(
-        project=pk,
+    (participation, created) = Participation.objects.get_or_create(
+        project_id=pk,
         user=request.user,
     )
     participation.is_active = request.data['participate']
@@ -62,7 +62,7 @@ class ProjectListAPIView(generics.ListAPIView):
     Provides method(s): GET.
     """
     serializer_class = ProjectSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ProjectPermissions]
     pagination_class = ProjectPageNumberPagination
 
     def get_queryset(self):
@@ -76,11 +76,14 @@ class ProjectListAPIView(generics.ListAPIView):
         return Project.objects.filter(
             Q(is_active=True) & (
                 Q(is_public=True) | (
-                    Q(participation__is_active=True) &
-                    Q(participation__user=self.request.user)
+                    Q(project_participation_set__is_active=True) &
+                    Q(project_participation_set__user=self.request.user)
                 )
             )
-        ).select_related('is_owner').order_by('date_created')
+        ).values(
+            'id', 'title', 'description', 'thumbnail', 'is_public',
+            'date_created', 'project_participation_set__is_owner',
+        ).order_by('id')
 
 
 class ProjectCreateAPIView(generics.CreateAPIView):
@@ -89,7 +92,7 @@ class ProjectCreateAPIView(generics.CreateAPIView):
     Provides method(s): POST.
     """
     serializer_class = ProjectSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ProjectPermissions]
 
     def create(self, request, *args, **kwargs):
         """
@@ -117,7 +120,7 @@ class ProjectRetrieveAPIView(generics.RetrieveAPIView):
     Provides method(s): GET.
     """
     serializer_class = ProjectSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ProjectPermissions]
 
     def get_queryset(self):
         """
@@ -128,12 +131,12 @@ class ProjectRetrieveAPIView(generics.RetrieveAPIView):
         """
         return Project.objects.filter(
             Q(is_active=True) &
-            Q(participation__user=self.request.user)
-        )
+            Q(project_participation_set__user=self.request.user)
+        ).order_by('id')
 
     def get(self, request, *args, **kwargs):
         """
-        Retrieves project content: cards and categories.
+        Retrieves project content.
         :param request: Request instance.
         :param args: additional arguments.
         :param kwargs: additional key-value arguments.
@@ -141,20 +144,9 @@ class ProjectRetrieveAPIView(generics.RetrieveAPIView):
         """
         project = self.get_object()
         categories = get_default_categories()
-
-        categories_cards = {}
-        for category in categories:
-            cards = Card.objects.filter(
-                Q(project=project.pk) &
-                Q(is_active=True) &
-                Q(category=category)
-            )
-            categories_cards[category.name] = CardSerializer(cards, many=True).data
-
         return Response({
             'information': ProjectSerializer(project).data,
             'categories': CategorySerializer(categories, many=True).data,
-            'cards': categories_cards
         })
 
 
@@ -164,7 +156,7 @@ class ProjectUpdateAPIView(generics.UpdateAPIView):
     Provides method(s): UPDATE.
     """
     serializer_class = ProjectSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ProjectPermissions]
 
     def get_queryset(self):
         """
@@ -175,12 +167,9 @@ class ProjectUpdateAPIView(generics.UpdateAPIView):
         """
         return Project.objects.filter(
             Q(is_active=True) &
-            Q(participation__is_active=True) &
-            Q(participation__user=self.request.user)
-        )
-
-    def update(self, request, *args, **kwargs):
-        pass
+            Q(project_participation_set__is_active=True) &
+            Q(project_participation_set__user=self.request.user)
+        ).order_by('id')
 
 
 class ProjectDestroyAPIView(generics.DestroyAPIView):
@@ -189,7 +178,7 @@ class ProjectDestroyAPIView(generics.DestroyAPIView):
     Provides method(s): DELETE.
     """
     serializer_class = ProjectSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ProjectPermissions]
 
     def get_queryset(self):
         """
@@ -200,10 +189,10 @@ class ProjectDestroyAPIView(generics.DestroyAPIView):
         """
         return Project.objects.filter(
             Q(is_active=True) &
-            Q(participation__is_active=True) &
-            Q(participation__user=self.request.user) &
-            Q(participation__is_owner=True)
-        )
+            Q(project_participation_set__is_active=True) &
+            Q(project_participation_set__user=self.request.user) &
+            Q(project_participation_set__is_owner=True)
+        ).order_by('id')
 
     def delete(self, request, *args, **kwargs):
         """
@@ -219,13 +208,48 @@ class ProjectDestroyAPIView(generics.DestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class CardListAPIView(generics.ListAPIView):
+    """
+    View which controls a collection of Card instances for the specified category.
+    """
+    serializer_class = CardSerializer
+    permission_classes = [IsAuthenticated, ProjectContentPermissions]
+
+    def get_queryset(self):
+        """
+        Selects cards for the specified category.
+        :return: filtered list of cards.
+        """
+        return Card.objects.filter(
+            is_active=True,
+            project_id=self.kwargs.get('project_pk'),
+            category_id=self.kwargs.get('category_pk'),
+        ).order_by('id')
+
+
 class CardCreateAPIView(generics.CreateAPIView):
     """
     View which controls process of creation of single Card instance.
     Provides method(s): POST.
     """
     serializer_class = CardSerializer
-    permission_classes = [IsAuthenticated, ProjectDataPermissions]
+    permission_classes = [IsAuthenticated, ProjectContentPermissions]
+
+    def create(self, request, *args, **kwargs):
+        """
+        Creates card in a specific category in a project.
+        :param request: Request instance.
+        :param args: additional arguments.
+        :param kwargs: additional key-value arguments.
+        :return: Response object.
+        """
+        request.data['project'] = kwargs.get('project_pk')
+        request.data['category'] = kwargs.get('category_pk')
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class CardRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -234,9 +258,9 @@ class CardRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     delete, modify, create and show its details.
     Provides method(s): GET, PUT, PATCH, DELETE.
     """
-    queryset = Card.objects.filter(is_active=True).order_by('pk')
+    queryset = Card.objects.filter(is_active=True)
     serializer_class = CardSerializer
-    permission_classes = [IsAuthenticated, ProjectDataPermissions]
+    permission_classes = [IsAuthenticated, ProjectContentPermissions]
 
     def delete(self, request, *args, **kwargs):
         """

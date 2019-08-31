@@ -54,16 +54,16 @@ export default {
     }),
   },
 
-  created() {
-    this.fetchProjects(this.$route.query.page || 1);
-  },
-
   watch: {
     '$route.query.page': function fetch(page) { this.fetchProjects(page || 1); },
   },
 
   methods: {
     ...mapActions(['fetchProjects']),
+  },
+
+  created() {
+    this.fetchProjects(this.$route.query.page || 1);
   },
 };
 </script>

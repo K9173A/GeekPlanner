@@ -1,25 +1,43 @@
 <template>
-<form v-on:submit.prevent="submit" method="post" enctype="multipart/form-data">
-  <vue-form-generator :schema="schema" :model="model" :options="formOptions">
-  </vue-form-generator>
-  <div class="d-flex justify-content-around px-4 py-4">
-    <input class="btn btn-primary col-5" type="submit" value="Create">
-    <button @click="$router.go(-1)" class="btn btn-primary col-5">
-      Cancel
-    </button>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-6">
+      <ErrorStack/>
+      <div class="card my-4 gp-form">
+        <div class="card-header text-center text-uppercase font-weigt-bold">
+          {{ title }}
+        </div>
+        <div class="card-body">
+          <form v-on:submit.prevent="submit" method="post" enctype="multipart/form-data">
+            <vue-form-generator :schema="schema" :model="model" :options="formOptions">
+            </vue-form-generator>
+            <div class="d-flex justify-content-around px-4 py-4">
+              <button @click="$router.go(-1)" class="btn btn-primary col-5">
+                Cancel
+              </button>
+              <input class="btn btn-primary col-5" type="submit" value="Create">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
-</form>
+</div>
 </template>
 
 <script>
 import { mapMutations } from 'vuex';
 import token from '@/common/token';
+import ErrorStack from '@/components/ErrorStack.vue';
 
 export default {
   name: 'CreateProject',
 
+  components: { ErrorStack },
+
   data() {
     return {
+      title: 'New Project',
       model: {
         title: '',
         description: '',
