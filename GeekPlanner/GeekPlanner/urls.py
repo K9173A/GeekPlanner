@@ -27,6 +27,10 @@ urlpatterns = [
         'api/planner/',
         include('api.plannerapp.urls', namespace='planner')
     ),
+    path(
+        'api/auth/',
+        include('api.authapp.urls', namespace='auth')
+    ),
     # ========================================================================
     # djoser authentication backends
     # ========================================================================

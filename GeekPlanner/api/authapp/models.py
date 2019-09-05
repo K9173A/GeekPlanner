@@ -17,12 +17,14 @@ class User(AbstractUser):
 
 class UserProfile(models.Model):
     """UserProfile is an account which can be edited by user."""
-    MALE = 'M'
-    FEMALE = 'W'
+    NOT_SET = 0
+    MALE = 1
+    FEMALE = 2
 
     GENDER_CHOICES = (
+        (NOT_SET, 'Not Set'),
         (MALE, 'Male'),
-        (FEMALE, 'Female'),
+        (FEMALE, 'Female')
     )
     # Implements One-To-One relationship with User model
     user = models.OneToOneField(
@@ -37,11 +39,10 @@ class UserProfile(models.Model):
         blank=True
     )
     # User gender: male or female
-    gender = models.CharField(
+    gender = models.IntegerField(
         verbose_name='gender',
-        max_length=1,
         choices=GENDER_CHOICES,
-        blank=True
+        default=NOT_SET
     )
 
     @property

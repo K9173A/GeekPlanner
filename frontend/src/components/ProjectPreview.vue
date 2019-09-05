@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
+import { mapActions, mapMutations, mapState } from 'vuex';
 import ConfirmDeleteModal from '@/components/ConfirmDeleteModal.vue';
 import token from '@/common/token';
 
@@ -59,14 +59,21 @@ export default {
 
   props: ['project', 'index'],
 
+  computed: {
+    ...mapState({
+      currentPage: state => state.planner.pagination.currPageNumber,
+    }),
+  },
+
   methods: {
+    ...mapActions(['fetchProjects']),
     ...mapMutations(['setProjectInformation', 'setProjectData', 'setError', 'setDeleteObjectType']),
 
     participate(value) {
       this.axios
         .patch(`planner/participate_project/${this.project.id}/`,
           { participate: value }, token.getAuthHeaders())
-        .then(() => { this.project.is_owner = value; })
+        .then(() => this.fetchProjects(this.currentPage))
         .catch(error => this.setError(error));
     },
 

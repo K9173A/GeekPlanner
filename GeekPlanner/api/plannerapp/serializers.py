@@ -15,7 +15,11 @@ class ParticipationSerializer(serializers.ModelSerializer):
     """Serialize of Participation model."""
     class Meta:
         model = Participation
-        fields = ('project', 'user', 'is_owner',)
+        fields = (
+            'project',
+            'user',
+            'is_owner'
+        )
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -32,8 +36,15 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ('id', 'title', 'date_created', 'description',
-                  'thumbnail', 'is_public', 'is_owner')
+        fields = (
+            'id',
+            'title',
+            'date_created',
+            'description',
+            'thumbnail',
+            'is_public',
+            'is_owner'
+        )
 
 
 class CardSerializer(serializers.ModelSerializer):
@@ -42,8 +53,14 @@ class CardSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Card
-        fields = ('id', 'title', 'description', 'priority',
-                  'project', 'category')
+        fields = (
+            'id',
+            'title',
+            'description',
+            'priority',
+            'project',
+            'category'
+        )
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -52,4 +69,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('id', 'name',)
+        fields = (
+            'id',
+            'name'
+        )

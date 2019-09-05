@@ -41,7 +41,7 @@ const actions = {
    */
   fetchProjects({ commit }, pageNumber) {
     Vue.axios
-      .get(`planner/projects?page=${pageNumber}`, token.getAuthHeaders())
+      .get(`planner/projects/?page=${pageNumber}`, token.getAuthHeaders())
       .then((response) => {
         commit('setPageNumber', { pagePosition: 'previous', pageNumber: response.data.prev });
         commit('setPageNumber', { pagePosition: 'current', pageNumber: response.data.curr });

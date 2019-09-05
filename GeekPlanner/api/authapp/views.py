@@ -12,14 +12,19 @@ will send needed data to the backend to complete activation.
 from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 
+from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from djoser import utils
 from djoser.conf import settings as djoser_settings
 from templated_mail import mail
 
+from .serializers import UserSerializer
+
 
 class ActivationEmailView(mail.BaseEmailMessage):
     """
-    View which controlls content of the activation message sent to
+    View which controls content of the activation message sent to
     the user email, so he can complete activation process.
     """
     template_name = 'email/activation.html'
@@ -96,3 +101,8 @@ class UsernameResetEmail(mail.BaseEmailMessage):
         context['domain'] = settings.DJOSER_GEEKPLANNER.get('domain_address')
         context['site_name'] = settings.DJOSER_GEEKPLANNER.get('domain_name')
         return context
+
+
+class UserProfileRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]

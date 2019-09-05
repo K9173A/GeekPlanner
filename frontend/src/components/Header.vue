@@ -39,7 +39,7 @@
     <button @click="logout" class="btn btn-outline-primary font-weight-bold btn-register">
       Sign out
     </button>
-    <router-link :to="{ name: 'home' }"
+    <router-link :to="{ name: 'profile' }"
                  class="btn btn-outline-primary font-weight-bold btn-register">
       Profile
     </router-link>

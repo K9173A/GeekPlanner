@@ -93,7 +93,7 @@ class Participation(models.Model):
     # Is this user an owner of this project?
     is_owner = models.BooleanField(
         verbose_name='isOwner',
-        default=False,
+        default=False
     )
     # If user leaves, this field will be set to False
     is_active = models.BooleanField(

@@ -21,6 +21,12 @@ const router = new Router({
       component: () => import('./views/Pricing.vue'),
     },
     {
+      path: '/profile/:id',
+      name: 'profile',
+      meta: { requiresAuth: true },
+      component: () => import('./components/form/UpdateUserForm.vue'),
+    },
+    {
       path: '/projects',
       name: 'projects',
       meta: { requiresAuth: true },

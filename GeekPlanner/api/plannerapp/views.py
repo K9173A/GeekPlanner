@@ -1,6 +1,8 @@
 """
 Module for plannerapp views.
 """
+import collections
+
 from django.db.models import Q
 
 from rest_framework import generics, status
@@ -73,17 +75,50 @@ class ProjectListAPIView(generics.ListAPIView):
         * Project was created by anybody, but it has public status (is_public=True).
         :return: filtered queryset with projects.
         """
-        return Project.objects.filter(
-            Q(is_active=True) & (
-                Q(is_public=True) | (
-                    Q(project_participation_set__is_active=True) &
-                    Q(project_participation_set__user=self.request.user)
-                )
-            )
+        # Projects where user takes part in
+        qs1 = Project.objects.filter(
+            Q(is_active=True) &
+            Q(project_participation_set__user_id=self.request.user.id) &
+            Q(project_participation_set__is_active=True)
         ).values(
-            'id', 'title', 'description', 'thumbnail', 'is_public',
-            'date_created', 'project_participation_set__is_owner',
+            'id', 'title', 'is_public', 'project_participation_set__is_owner',
+            'project_participation_set__user'
         ).order_by('id')
+
+        # Projects which user can join
+        qs2 = Project.objects.filter(
+            Q(is_active=True) &
+            Q(is_public=True) & (
+                (
+                    Q(project_participation_set__user_id=self.request.user.id) &
+                    Q(project_participation_set__is_active=False)
+                ) |
+                ~Q(project_participation_set__user_id=self.request.user.id)
+            )
+        ).distinct('id').values(
+            'id', 'title', 'is_public', 'project_participation_set__is_owner',
+            'project_participation_set__user'
+        ).order_by('id')
+
+        for index, content in enumerate(qs2):
+            qs2[index]['project_participation_set__is_owner'] = None
+
+        query1 = list(qs1)
+        query2 = list(qs2)
+
+        if query1:
+            if query2:
+                for index, item2 in enumerate(query2[:]):
+                    filtered = list(
+                        filter(lambda item1: item1['id'] == item2['id'], query1)
+                    )
+                    if filtered:
+                        query2 = list(
+                            filter(lambda item: item['id'] != item2['id'], query2)
+                        )
+                return query1 + query2
+            return query1
+        return qs2
 
 
 class ProjectCreateAPIView(generics.CreateAPIView):
