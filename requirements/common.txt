@@ -1,0 +1,64 @@
+# Backend framework.
+Django==2.2
+
+# RESTful API for Django framework.
+djangorestframework==3.10.1
+
+# Django's required dependency to work with timezones
+pytz==2019.1
+
+# Django's required dependency. Utilities for writing code that runs on
+# Python 2 and 3.
+six==1.12.0
+
+# Django's required  dependency (since v2.2). SQL parser module.
+sqlparse==0.3.0
+
+# Package which provides basis for the construction of function wrappers and
+# decorators.
+wrapt==1.11.2
+
+# Package which based on wrapt.
+lazy-object-proxy==1.4.1
+
+# Package that provides a Python 2.7 and Python 3 parser similar to the standard
+# ast library.
+typed-ast==1.4.0
+
+# Package which allows to detect confusable usage of unicode homoglyphs (letters
+# which may look exactly the same but have different origins and code). Prevents
+# malicious websites from tricking customers.
+confusable-homoglyphs==3.2.0
+
+# Package which allows to sort imports based on their origin (standard library,
+# third party and etc...).
+isort==4.3.21
+
+# Package for Cross-Origin Resource Sharing.
+# Needed for interaction between Django and Vue applications.
+django-cors-headers==3.0.2
+
+# Cool package for authentication which supports two-factor authentication.
+# and also supports JWT (Json Web Token)
+djoser==2.0.1
+
+# djangorestframework-simplejwt's dependency which is used to perform
+# signing/verification operations on tokens
+PyJWT==1.7.1
+
+# Djoser's required dependency.
+# Djoser supports JWT authentication.
+djangorestframework-simplejwt==4.3.0
+
+# Djoser's required dependency.
+# Does not work with Django 2.2. Only with Django 2.0?
+django-templated-mail==1.1.1
+
+# Package to work with images in Django.
+# I mostly use it for ImageField() from Django ORM.
+Pillow==6.0.0
+
+# PostgreSQL adapter for Python.
+# I don't use custom version. Binary version is enough to accomplish our goals.
+psycopg2-binary==2.8.3
+
