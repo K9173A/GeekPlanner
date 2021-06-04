@@ -1,6 +1,6 @@
 astroid==2.2.5
 confusable-homoglyphs==3.2.0
-Django==2.2
+Django==2.2.21
 django-cors-headers==3.0.2
 django-templated-mail==1.1.1
 djangorestframework==3.10.1
